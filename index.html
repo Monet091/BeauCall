@@ -494,6 +494,101 @@
             letter-spacing: 1px;
         }
 
+        /* --- STYLE MODAL PEMBAYARAN --- */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 3000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-modal:hover { color: #000; }
+
+        /* Tampilan QRIS */
+        .qris-container {
+            text-align: center;
+            background: #fff;
+            padding: 1rem;
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .qris-container img {
+            width: 200px; height: 200px;
+        }
+
+        /* Tampilan Bank */
+        .bank-details-box {
+            background-color: #f0f8ff;
+            border: 1px solid #b0c4de;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .account-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            letter-spacing: 2px;
+            margin: 10px 0;
+            display: block;
+            font-family: monospace;
+        }
+
+        /* Spinner Loading */
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            width: 50px; height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Animasi Checkmark Sukses */
+        .success-checkmark { width: 80px; height: 115px; margin: 0 auto; }
+        .check-icon { width: 80px; height: 80px; position: relative; border-radius: 50%; box-sizing: content-box; border: 4px solid #4CAF50; }
+        .check-icon::before { top: 3px; left: -2px; width: 30px; transform-origin: 100% 50%; border-radius: 100px 0 0 100px; }
+        .check-icon::after { top: 0; left: 30px; width: 60px; transform-origin: 0 50%; border-radius: 0 100px 100px 0; animation: rotate-circle 4.25s ease-in; }
+        .icon-line { height: 5px; background-color: #4CAF50; display: block; border-radius: 2px; position: absolute; z-index: 10; }
+        .line-tip { top: 46px; left: 14px; width: 25px; transform: rotate(45deg); animation: icon-line-tip 0.75s; }
+        .line-long { top: 38px; right: 8px; width: 47px; transform: rotate(-45deg); animation: icon-line-long 0.75s; }
+        .icon-circle { top: -4px; left: -4px; z-index: 10; width: 80px; height: 80px; border-radius: 50%; position: absolute; box-sizing: content-box; border: 4px solid rgba(76, 175, 80, .5); }
+        .icon-fix { top: 8px; width: 5px; left: 26px; z-index: 1; height: 85px; position: absolute; transform: rotate(-45deg); background-color: #fff; }
+        @keyframes icon-line-tip { 0% { width: 0; left: 1px; top: 19px; } 54% { width: 0; left: 1px; top: 19px; } 70% { width: 50px; left: -8px; top: 37px; } 84% { width: 17px; left: 21px; top: 48px; } 100% { width: 25px; left: 14px; top: 46px; } }
+        @keyframes icon-line-long { 0% { width: 0; right: 46px; top: 54px; } 65% { width: 0; right: 46px; top: 54px; } 84% { width: 55px; right: 0px; top: 35px; } 100% { width: 47px; right: 8px; top: 38px; } }
+
         /* --- Responsive --- */
         @media (max-width: 768px) {
             #home {
@@ -737,6 +832,50 @@
         <p class="team-info">SISCA FRECILIA RAMADHANI EMPI (CEO) • TIMOTIUS ANDARU (MO) • ZASKIA MAULINA SYIFA (MO) • HARITS MAULANA YUSUF (PROGRAMMER) • DANIEL ADRIEL CARLO (DESIGNER) • RASHIFAH HASNA FAIZAH ELHAQ (DESIGNER)</p>
     </footer>
 
+    <audio id="success-sound" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
+
+        <div id="payment-modal" class="modal-overlay">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+                
+                <div id="payment-header">
+                    <h3>Selesaikan Pembayaran</h3>
+                    <p id="payment-timer" style="color: #d9534f; font-weight: bold;">Sisa Waktu: 14:59</p>
+                </div>
+
+                <div id="payment-instruction">
+                    <div id="dynamic-payment-content"></div>
+                    
+                    <hr style="margin: 1.5rem 0; border: 0; border-top: 1px dashed #ccc;">
+                    
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                        Setelah transfer, silakan klik tombol di bawah untuk verifikasi otomatis.
+                    </p>
+                    <button class="btn" onclick="fakePaymentProcess()" style="width: 100%;">Konfirmasi Sudah Bayar</button>
+                </div>
+
+                <div id="payment-loading" style="display: none; text-align: center; padding: 2rem;">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 1rem; font-weight: 600;">Memverifikasi Pembayaran...</p>
+                    <p style="font-size: 0.8rem; color: #888;">Mohon jangan tutup halaman ini.</p>
+                </div>
+
+                <div id="payment-success" style="display: none; text-align: center; padding: 2rem;">
+                    <div class="success-checkmark">
+                        <div class="check-icon">
+                            <span class="icon-line line-tip"></span>
+                            <span class="icon-line line-long"></span>
+                            <div class="icon-circle"></div>
+                            <div class="icon-fix"></div>
+                        </div>
+                    </div>
+                    <h3 style="color: #4CAF50; margin-top: 1rem;">Pembayaran Berhasil!</h3>
+                    <p>Mengarahkan ke WhatsApp...</p>
+                </div>
+            </div>
+        </div>
+
+
     <script>
     /* =========================================
        1. SYSTEM & NAVIGATION LOGIC 
@@ -787,42 +926,41 @@
     });
 
     /* =========================================
-       2. REGION & PAYMENT LOGIC (UPDATED)
+       2. REGION & DATA LOGIC
        ========================================= */
-
+    // Database Region (Sama seperti sebelumnya)
     const regionData = {
-        'jakpus': { eta: "20 - 30 Menit", salons: [{ id: 'jp-1', name: "BeauSalon Jakarta Pusat", desc: "Cabang Utama.", rating: 5.0 }, { id: 'jp-2', name: "Menteng Hair Expert", desc: "Partner Partner.", rating: 4.8 }] },
-        'jaksel': { eta: "30 - 45 Menit", salons: [{ id: 'js-1', name: "BeauSalon Jakarta Selatan", desc: "Cabang Utama.", rating: 4.9 }, { id: 'js-2', name: "Kemang Beauty", desc: "Partner Partner.", rating: 4.7 }] },
-        'jakbar': { eta: "30 - 45 Menit", salons: [{ id: 'jb-1', name: "BeauSalon Jakarta Barat", desc: "Cabang Utama.", rating: 4.8 }, { id: 'jb-2', name: "Puri Indah Glamour", desc: "Partner Partner.", rating: 4.6 }] },
-        'jaktim': { eta: "30 - 45 Menit", salons: [{ id: 'jt-1', name: "BeauSalon Jakarta Timur", desc: "Cabang Utama.", rating: 4.8 }, { id: 'jt-2', name: "Rawamangun Cuts", desc: "Partner Partner.", rating: 4.5 }] },
-        'jakut': { eta: "30 - 50 Menit", salons: [{ id: 'ju-1', name: "BeauSalon Jakarta Utara", desc: "Cabang Utama.", rating: 4.8 }, { id: 'ju-2', name: "PIK Hair Studio", desc: "Partner Partner.", rating: 4.9 }] },
-        'bekasi': { eta: "45 - 60 Menit", salons: [{ id: 'bks-1', name: "BeauSalon Bekasi", desc: "Cabang Utama.", rating: 4.8 }, { id: 'bks-2', name: "Galaxy Home Spa", desc: "Partner Partner.", rating: 4.6 }] },
-        'depok': { eta: "45 - 60 Menit", salons: [{ id: 'dpk-1', name: "BeauSalon Depok", desc: "Cabang Utama.", rating: 4.8 }, { id: 'dpk-2', name: "Cinere Beauty", desc: "Partner Partner.", rating: 4.5 }] },
-        'tangerang': { eta: "40 - 60 Menit", salons: [{ id: 'tng-1', name: "BeauSalon Tangerang", desc: "Cabang Utama.", rating: 4.9 }, { id: 'tng-2', name: "Gading Serpong MUA", desc: "Partner Partner.", rating: 4.7 }] },
-        'bogor': { eta: "60 - 90 Menit", salons: [{ id: 'bgr-1', name: "BeauSalon Bogor", desc: "Cabang Utama.", rating: 4.7 }, { id: 'bgr-2', name: "Sentul City Stylist", desc: "Partner Partner.", rating: 4.6 }] }
+        'jakpus': { eta: "20 - 30 Menit", salons: [{ id: 'jp-1', name: "BeauSalon Jakarta Pusat", desc: "Cabang Utama.", rating: 5.0 }, { id: 'jp-2', name: "Menteng Hair Expert", desc: "Partner.", rating: 4.8 }] },
+        'jaksel': { eta: "30 - 45 Menit", salons: [{ id: 'js-1', name: "BeauSalon Jakarta Selatan", desc: "Cabang Utama.", rating: 4.9 }, { id: 'js-2', name: "Kemang Beauty", desc: "Partner.", rating: 4.7 }] },
+        'jakbar': { eta: "30 - 45 Menit", salons: [{ id: 'jb-1', name: "BeauSalon Jakarta Barat", desc: "Cabang Utama.", rating: 4.8 }, { id: 'jb-2', name: "Puri Indah Glamour", desc: "Partner.", rating: 4.6 }] },
+        'jaktim': { eta: "30 - 45 Menit", salons: [{ id: 'jt-1', name: "BeauSalon Jakarta Timur", desc: "Cabang Utama.", rating: 4.8 }, { id: 'jt-2', name: "Rawamangun Cuts", desc: "Partner.", rating: 4.5 }] },
+        'jakut': { eta: "30 - 50 Menit", salons: [{ id: 'ju-1', name: "BeauSalon Jakarta Utara", desc: "Cabang Utama.", rating: 4.8 }, { id: 'ju-2', name: "PIK Hair Studio", desc: "Partner.", rating: 4.9 }] },
+        'bekasi': { eta: "45 - 60 Menit", salons: [{ id: 'bks-1', name: "BeauSalon Bekasi", desc: "Cabang Utama.", rating: 4.8 }, { id: 'bks-2', name: "Galaxy Home Spa", desc: "Partner.", rating: 4.6 }] },
+        'depok': { eta: "45 - 60 Menit", salons: [{ id: 'dpk-1', name: "BeauSalon Depok", desc: "Cabang Utama.", rating: 4.8 }, { id: 'dpk-2', name: "Cinere Beauty", desc: "Partner.", rating: 4.5 }] },
+        'tangerang': { eta: "40 - 60 Menit", salons: [{ id: 'tng-1', name: "BeauSalon Tangerang", desc: "Cabang Utama.", rating: 4.9 }, { id: 'tng-2', name: "Gading Serpong MUA", desc: "Partner.", rating: 4.7 }] },
+        'bogor': { eta: "60 - 90 Menit", salons: [{ id: 'bgr-1', name: "BeauSalon Bogor", desc: "Cabang Utama.", rating: 4.7 }, { id: 'bgr-2', name: "Sentul City Stylist", desc: "Partner.", rating: 4.6 }] }
     };
 
     let selectedSalon = null;
     let currentEta = ""; 
+    let finalPaymentData = {}; // Menyimpan data sementara
 
-    // FUNGSI UNTUK SHOW/HIDE DROPDOWN BANK
     function toggleBankOption(show) {
         const bankContainer = document.getElementById('bank-dropdown-container');
         if (show) {
             bankContainer.style.display = 'block';
         } else {
             bankContainer.style.display = 'none';
-            document.getElementById('selected-bank').value = ""; // Reset pilihan bank
+            document.getElementById('selected-bank').value = ""; 
         }
     }
 
     function handleBookingSearch() {
         const service = document.getElementById('service').value;
         const region = document.getElementById('region').value; 
-        
         const salonListContainer = document.getElementById('salon-list');
         const salonResultsSection = document.getElementById('salon-results');
-        const paymentSection = document.getElementById('payment-section'); // Section Pembayaran
+        const paymentSection = document.getElementById('payment-section');
         const confirmBtn = document.getElementById('confirm-booking-btn');
         
         if (!service || !region) {
@@ -840,12 +978,12 @@
         salonListContainer.innerHTML = '';
         selectedSalon = null;
         
-        // Reset State Pembayaran
         paymentSection.style.display = 'none'; 
         confirmBtn.disabled = true;
         confirmBtn.style.opacity = "0.5";
-        
-        // Uncheck radio buttons
+        confirmBtn.innerText = "Pilih Salon & Pembayaran Terlebih Dahulu"; // Ubah teks tombol
+
+        // Reset inputs
         const radios = document.getElementsByName('payment_method');
         for(let i=0;i<radios.length;i++) radios[i].checked = false;
         toggleBankOption(false);
@@ -854,13 +992,11 @@
             const salonDiv = document.createElement('div');
             salonDiv.classList.add('salon-item');
             salonDiv.setAttribute('data-salon-id', salon.id);
-            
             salonDiv.innerHTML = `
                 <h4>${salon.name}</h4>
                 <p style="font-size: 0.9rem; color: #555; margin-bottom: 0.5rem;"><em>${salon.desc}</em></p>
                 <div style="font-size: 0.85rem; background: #f9f9f9; padding: 5px; border-radius: 4px;">
-                    <strong>Est. Tiba:</strong> ${currentEta} <br>
-                    <strong>Rating:</strong> ${salon.rating} <i class="fas fa-star" style="color: #d4af37;"></i>
+                    <strong>Estimasi:</strong> ${currentEta} | <strong>Rating:</strong> ${salon.rating} <i class="fas fa-star" style="color: #d4af37;"></i>
                 </div>
             `;
             
@@ -869,27 +1005,26 @@
                 salonDiv.classList.add('selected');
                 selectedSalon = salon;
                 
-                // BARU: Setelah pilih salon, Munculkan Opsi Pembayaran & Tombol
                 paymentSection.style.display = 'block';
+                confirmBtn.innerText = "Bayar Sekarang"; // Ubah teks jadi Bayar
                 confirmBtn.disabled = false;
                 confirmBtn.style.opacity = "1";
                 
-                // Scroll sedikit agar user melihat opsi pembayaran
-                setTimeout(() => {
-                    paymentSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
+                setTimeout(() => { paymentSection.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
             });
-
             salonListContainer.appendChild(salonDiv);
         });
-
         salonResultsSection.style.display = 'block';
-        setTimeout(() => {
-            salonResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        setTimeout(() => { salonResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
     }
 
-    function proceedToWhatsApp() {
+
+    /* =========================================
+       3. FAKE PAYMENT SYSTEM (LOGIKA BARU)
+       ========================================= */
+
+    // Validasi sebelum membuka Modal
+    function initiatePayment() {
         const form = document.getElementById('booking-form');
         
         if (!form.checkValidity()) {
@@ -903,7 +1038,7 @@
             return;
         }
 
-        // VALIDASI PEMBAYARAN
+        // Cek Metode Pembayaran
         const paymentRadios = document.getElementsByName('payment_method');
         let paymentMethod = "";
         for (let i = 0; i < paymentRadios.length; i++) {
@@ -925,10 +1060,90 @@
                 alert("Mohon pilih Bank Tujuan untuk M-Banking.");
                 return;
             }
-            bankDetail = `(${selectedBank})`;
+            bankDetail = selectedBank;
         }
 
-        // Ambil Data Form
+        // Simpan Data untuk dikirim ke WA nanti
+        finalPaymentData = {
+            method: paymentMethod,
+            bank: bankDetail
+        };
+
+        // Buka Modal Pembayaran
+        openPaymentModal(paymentMethod, bankDetail);
+    }
+
+    // Fungsi Membuka Modal
+    function openPaymentModal(method, bank) {
+        const modal = document.getElementById('payment-modal');
+        const contentDiv = document.getElementById('dynamic-payment-content');
+        
+        // Reset View Modal
+        document.getElementById('payment-instruction').style.display = 'block';
+        document.getElementById('payment-loading').style.display = 'none';
+        document.getElementById('payment-success').style.display = 'none';
+        
+        let htmlContent = "";
+
+        if (method === "QRIS") {
+            // Tampilan QRIS Dummy (Pake API QR Code Generator)
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BeauCallPayment-${Math.floor(Math.random() * 10000)}`;
+            htmlContent = `
+                <div class="qris-container">
+                    <p style="margin-bottom:10px; font-weight:bold;">Scan QRIS ini</p>
+                    <img src="${qrUrl}" alt="QRIS Code">
+                    <p style="margin-top:5px; font-size:0.8rem;">Supported: GoPay, OVO, Dana, ShopeePay, Mobile Banking</p>
+                </div>
+                <p style="text-align:center;">Total Tagihan: <strong>Menunggu Konfirmasi Salon</strong></p>
+            `;
+        } else {
+            // Tampilan Transfer Bank
+            // Generate nomor rekening dummy acak
+            const dummyRek = Math.floor(1000000000 + Math.random() * 9000000000);
+            htmlContent = `
+                <div class="bank-details-box">
+                    <p>Transfer ke Bank <strong>${bank}</strong></p>
+                    <span class="account-number">${dummyRek}</span>
+                    <p>a.n. <strong>PT BeauCall Indonesia</strong></p>
+                </div>
+                <p style="text-align:center; margin-top:1rem;">Silakan transfer sesuai total tagihan nanti.</p>
+            `;
+        }
+
+        contentDiv.innerHTML = htmlContent;
+        modal.style.display = "flex";
+    }
+
+    function closePaymentModal() {
+        document.getElementById('payment-modal').style.display = "none";
+    }
+
+    // Fungsi Pura-pura Proses Bayar
+    function fakePaymentProcess() {
+        // 1. Sembunyikan instruksi, tampilkan loading
+        document.getElementById('payment-instruction').style.display = 'none';
+        document.getElementById('payment-loading').style.display = 'block';
+
+        // 2. Tunggu 2 detik (Simulasi loading server)
+        setTimeout(() => {
+            document.getElementById('payment-loading').style.display = 'none';
+            document.getElementById('payment-success').style.display = 'block';
+            
+            // 3. Mainkan Audio
+            const audio = document.getElementById('success-sound');
+            audio.play().catch(e => console.log("Audio play blocked by browser policy"));
+
+            // 4. Redirect ke WA setelah 2 detik
+            setTimeout(() => {
+                sendToWhatsApp();
+                closePaymentModal();
+            }, 2000);
+
+        }, 2000);
+    }
+
+    // Kirim ke WhatsApp (Versi Final)
+    function sendToWhatsApp() {
         const name = document.getElementById('name').value;
         const whatsapp = document.getElementById('whatsapp').value;
         const regionRaw = document.getElementById('region');
@@ -938,9 +1153,11 @@
         const time = document.getElementById('time').value;
         const service = document.getElementById('service').value;
 
-        // Format Pesan WhatsApp
-        const message = `Halo BeauCall, saya sudah mengisi data dan memilih pembayaran.
+        // Format Pesan Pembayaran LUNAS
+        const message = `Halo BeauCall! Pembayaran BERHASIL via Website.
 
+✅ *STATUS: SUDAH DIBAYAR*
+--------------------------------
 *Detail Pelanggan:*
 Nama: ${name}
 No WA: ${whatsapp}
@@ -952,21 +1169,24 @@ Layanan: ${service}
 Tanggal: ${date}
 Jam: ${time}
 
-*Pilihan Mitra:*
-Salon: ${selectedSalon.name}
-Estimasi: ${currentEta}
+*Mitra Pilihan:*
+Salon: ${selectedSalon.name} (ID: ${selectedSalon.id})
+Estimasi Tiba: ${currentEta}
 
-*Metode Pembayaran:*
-Jenis: ${paymentMethod} ${bankDetail}
+*Metode Bayar:*
+${finalPaymentData.method} ${finalPaymentData.bank ? '('+finalPaymentData.bank+')' : ''}
 
-Mohon kirimkan Nomor Rekening/QRIS untuk saya melakukan pembayaran. Terima kasih!`;
+Mohon segera konfirmasi stylist. Terima kasih!`;
 
         const waUrl = `https://wa.me/6285694870477?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     }
 
+    // Event Listeners
     document.getElementById('search-salon-btn').addEventListener('click', handleBookingSearch);
-    document.getElementById('confirm-booking-btn').addEventListener('click', proceedToWhatsApp);
+    
+    // Ubah Event Listener tombol konfirmasi ke fungsi initiatePayment
+    document.getElementById('confirm-booking-btn').addEventListener('click', initiatePayment);
 
 </script>
 </body>

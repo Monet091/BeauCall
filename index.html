@@ -329,12 +329,12 @@
             font-style: italic;
         }
         form {
-            max-width: 700px;
+            max-width: 600px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
-            padding: 3rem;
+            padding: 2rem;
             background-color: #fff;
             border: 1px solid #eee;
         }
@@ -413,7 +413,7 @@
         }
 
         /* --- Responsive --- */
-        @media (max-width: 900px) {
+        @media (max-width: 768px) {
             #home {
                 flex-direction: column-reverse;
                 height: auto;
@@ -460,6 +460,18 @@
             }
             .hamburger {
                 display: flex;
+            }
+            #booking-form {
+                padding: 2rem 1rem;
+                max-width: 100%; 
+            }
+            .date-time-group {
+                flex-direction: column; 
+                gap: 0.5rem !important; 
+            }
+            .date-time-group input {
+                width: 100%;
+                flex: none !important; 
             }
         }
     </style>
@@ -536,7 +548,7 @@
             <input type="text" id="name" placeholder="Nama Lengkap" required>
             <input type="tel" id="whatsapp" placeholder="Nomor WhatsApp (0856-9487-0477)" required>
             <input type="text" id="address" placeholder="Alamat Lengkap (Rumah/Hotel/Event)" required>
-            <div style="display: flex; gap: 1rem;">
+            <div class="date-time-group" style="display: flex; gap: 1rem;">
                 <input type="date" id="date" required style="flex:1;">
                 <input type="time" id="time" required style="flex:1;">
             </div>

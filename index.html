@@ -113,33 +113,81 @@
         /* Penambahan login*/
         /* --- TAMBAHAN CSS UNTUK POIN 1 & 7 --- */
 
-        /* Gaya untuk Layar Login (Poin 1) */
+        /* --- STYLE LOGIN & SIGN UP --- */
         #login-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--main-bg); 
-            z-index: 2000; /* Pastikan di atas header */
+            z-index: 5000; /* Paling depan */
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
         }
+
         .login-box {
             background: white;
-            padding: 3rem;
+            padding: 2.5rem;
             border: 1px solid var(--secondary);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             text-align: center;
             max-width: 400px;
             width: 90%;
-        }
-        .login-box input {
-            width: 100%;
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            padding: 10px;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
         }
 
+        .login-box h2 {
+            color: var(--dark-brown);
+            font-family: var(--font-heading);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box p.subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: var(--font-body);
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .login-box input:focus {
+            border-color: var(--secondary);
+        }
+
+        .auth-toggle {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .auth-toggle a {
+            color: var(--secondary);
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+        }
         /* Gaya untuk Teks Peringatan (Poin 7) */
         .disclaimer-text {
             font-size: 0.85rem;
@@ -742,13 +790,38 @@
 <body>
     <div id="login-overlay">
         <div class="login-box">
-            <h2 style="margin-bottom: 1.5rem; color: var(--dark-brown); font-family: var(--font-heading);">Welcome to BeauCall</h2>
-            <p style="margin-bottom: 1.5rem; font-size: 0.9rem;">Silakan Login atau Sign Up untuk melanjutkan pemesanan.</p>
+            <h2 id="auth-title">Welcome Back</h2>
+            <p class="subtitle" id="auth-subtitle">Silakan login untuk melanjutkan booking.</p>
             
-            <input type="text" placeholder="Username / Email">
-            <input type="password" placeholder="Password">
-            
-            <button class="btn" style="width: 100%;" onclick="document.getElementById('login-overlay').style.display='none'">Login / Sign Up</button>
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="auth-username" placeholder="Masukkan Username">
+                </div>
+
+                <div id="signup-only-fields" style="display: none;">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="auth-email" placeholder="contoh@email.com">
+                    </div>
+                    <div class="input-group">
+                        <label>No. WhatsApp</label>
+                        <input type="tel" id="auth-phone" placeholder="085xxx">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="auth-password" placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="auth-btn">Masuk (Login)</button>
+            </form>
+
+            <div class="auth-toggle">
+                <span id="auth-toggle-text">Belum punya akun? </span>
+                <a onclick="toggleAuthMode()" id="auth-toggle-link">Daftar Sekarang</a>
+            </div>
         </div>
     </div>
     <header>
@@ -1008,6 +1081,88 @@
         </div>
     </div>
     <script>
+        /* =========================================
+       0. AUTHENTICATION SYSTEM (BARU)
+       ========================================= */
+    
+    let isLoginMode = true; // Status awal adalah Login
+
+    function toggleAuthMode() {
+        isLoginMode = !isLoginMode; // Balik status (True jadi False, dst)
+
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        const btn = document.getElementById('auth-btn');
+        const toggleText = document.getElementById('auth-toggle-text');
+        const toggleLink = document.getElementById('auth-toggle-link');
+        const extraFields = document.getElementById('signup-only-fields');
+
+        if (isLoginMode) {
+            // Mode Login
+            title.innerText = "Welcome Back";
+            subtitle.innerText = "Silakan login untuk melanjutkan booking.";
+            btn.innerText = "Masuk (Login)";
+            toggleText.innerText = "Belum punya akun? ";
+            toggleLink.innerText = "Daftar Sekarang";
+            extraFields.style.display = "none";
+        } else {
+            // Mode Sign Up
+            title.innerText = "Buat Akun Baru";
+            subtitle.innerText = "Bergabunglah dengan BeauCall hari ini.";
+            btn.innerText = "Daftar (Sign Up)";
+            toggleText.innerText = "Sudah punya akun? ";
+            toggleLink.innerText = "Login Disini";
+            extraFields.style.display = "block";
+        }
+    }
+
+    function handleAuth(event) {
+        event.preventDefault(); // Mencegah reload halaman
+
+        const username = document.getElementById('auth-username').value;
+        const password = document.getElementById('auth-password').value;
+        
+        // Validasi Dasar
+        if (!username || !password) {
+            showCustomAlert("Username dan Password wajib diisi!", "Gagal Masuk");
+            return;
+        }
+
+        // Validasi Tambahan untuk Sign Up
+        if (!isLoginMode) {
+            const email = document.getElementById('auth-email').value;
+            const phone = document.getElementById('auth-phone').value;
+            
+            if (!email || !phone) {
+                showCustomAlert("Email dan Nomor WhatsApp wajib diisi untuk pendaftaran.", "Data Tidak Lengkap");
+                return;
+            }
+        }
+
+        // Simulasi Loading Singkat
+        const btn = document.getElementById('auth-btn');
+        const originalText = btn.innerText;
+        btn.innerText = "Memproses...";
+        btn.disabled = true;
+
+        setTimeout(() => {
+            // Tutup Overlay
+            document.getElementById('login-overlay').style.display = 'none';
+            
+            // Tampilkan Pesan Sukses
+            if (isLoginMode) {
+                showCustomAlert(`Selamat datang kembali, ${username}!`, "Login Berhasil");
+                // Auto fill nama di form booking (opsional, fitur manis)
+                document.getElementById('name').value = username;
+            } else {
+                showCustomAlert("Akun Anda berhasil dibuat! Silakan nikmati layanan kami.", "Pendaftaran Berhasil");
+                document.getElementById('name').value = username;
+                document.getElementById('whatsapp').value = document.getElementById('auth-phone').value;
+            }
+        }, 1000);
+    }
+
+    
     /* =========================================
        1. SYSTEM & NAVIGATION LOGIC 
        ========================================= */

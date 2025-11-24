@@ -1387,6 +1387,7 @@
 
     // Kirim ke WhatsApp (Versi Final)
     // Fungsi Kirim ke WhatsApp (Format Baru yang Lebih Rapi)
+    // Fungsi Kirim ke WhatsApp (Format Estetik Baru)
     function sendToWhatsApp() {
         const name = document.getElementById('name').value;
         const whatsapp = document.getElementById('whatsapp').value;
@@ -1397,39 +1398,38 @@
         const time = document.getElementById('time').value;
         const service = document.getElementById('service').value;
 
-        // Format Pesan WhatsApp dengan Emoji dan Layout Rapi
-        const message = `✨ Halo BeauCall
+        // Format Pesan WhatsApp Baru
+        const message = `⋆𐙚 Halo BeauCall
 Pembayaran BERHASIL via Website. 
-✅ STATUS: SUDAH DIBAYAR ✅
+✮ STATUS: SUDAH DIBAYAR
 
 -----------------------------------------------
 
-🏠 Detail Pelanggan:
+𖦹 Detail Pelanggan:
 Nama: ${name}
 No WA: ${whatsapp}
 Daerah: ${regionName}
 Alamat: ${address}
 
-💇🏻‍♀️ Detail Layanan:
+𖦹 Detail Layanan:
 Layanan: ${service}
 Tanggal: ${date}
 Jam: ${time} 
 
-✂️ Mitra Pilihan:
+𖦹 Mitra Pilihan:
 Salon: ${selectedSalon.name} (ID: ${selectedSalon.id})
 Estimasi Tiba: ${currentEta}
 
 Metode Bayar:
-💵 ${finalPaymentData.method} ${finalPaymentData.bank ? '('+finalPaymentData.bank+')' : ''}
-ℹ️ Mohon segera konfirmasi stylist
+✮ ${finalPaymentData.method} ${finalPaymentData.bank ? '('+finalPaymentData.bank+')' : ''}
+✮ Mohon segera konfirmasi stylist
 
-Terima Kasih! ✨`;
+Terima Kasih! — ★`;
 
         // Mengarahkan ke WhatsApp
         const waUrl = `https://wa.me/6285694870477?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     }
-
 
 
 

@@ -110,6 +110,48 @@
             transition: 0.3s;
         }
 
+        /* Penambahan login*/
+        /* --- TAMBAHAN CSS UNTUK POIN 1 & 7 --- */
+
+        /* Gaya untuk Layar Login (Poin 1) */
+        #login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--main-bg); 
+            z-index: 2000; /* Pastikan di atas header */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border: 1px solid var(--secondary);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .login-box input {
+            width: 100%;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        /* Gaya untuk Teks Peringatan (Poin 7) */
+        .disclaimer-text {
+            font-size: 0.85rem;
+            color: #d9534f; 
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+            background-color: #fff5f5;
+            padding: 10px;
+            border-left: 3px solid #d9534f;
+        }
+
         /* --- Global Section Styles --- */
         section {
             padding: 0 2rem;
@@ -477,6 +519,17 @@
     </style>
 </head>
 <body>
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark-brown); font-family: var(--font-heading);">Welcome to BeauCall</h2>
+            <p style="margin-bottom: 1.5rem; font-size: 0.9rem;">Silakan Login atau Sign Up untuk melanjutkan pemesanan.</p>
+            
+            <input type="text" placeholder="Username / Email">
+            <input type="password" placeholder="Password">
+            
+            <button class="btn" style="width: 100%;" onclick="document.getElementById('login-overlay').style.display='none'">Login / Sign Up</button>
+        </div>
+    </div>
     <header>
         <nav>
             <div class="logo">
@@ -487,6 +540,9 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#menu">Services</a></li>
+                
+                <li><a href="#" onclick="alert('Fitur menulis dan melihat review akan tersedia setelah Anda menyelesaikan layanan pertama Anda!')">Reviews</a></li>
+                
                 <li><a href="#booking">Book Now</a></li>
             </ul>
             <div class="hamburger" onclick="toggleMenu()">
@@ -589,7 +645,13 @@
         <div id="salon-results" style="display: none; margin-top: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">
             <h3>Pilih Salon Partner Anda</h3>
             <div id="salon-list"></div>
-            <button id="confirm-booking-btn" class="btn" style="width: 100%; margin-top: 1rem;" disabled>Lanjutkan ke Pembayaran & WhatsApp</button>
+            
+            <p class="disclaimer-text">
+                <i class="fas fa-exclamation-circle"></i> 
+                <strong>PENTING:</strong> Sesuai prosedur, pesanan tidak dapat dibatalkan (No Cancellation) setelah pembayaran dilakukan. Mohon pastikan jadwal Anda sudah sesuai.
+            </p>
+
+            <button id="confirm-booking-btn" class="btn" style="width: 100%;" disabled>Lanjutkan ke Pembayaran & WhatsApp</button>
         </div>
     </section>
 

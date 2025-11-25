@@ -61,7 +61,6 @@
         }
         nav {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
             max-width: 1200px;
@@ -75,7 +74,10 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            margin-right: auto;
+            flex-shrink: 0;
         }
+
         .logo img {
             height: 2rem;
             width: auto;
@@ -84,6 +86,7 @@
         .nav-links {
             display: flex;
             list-style: none;
+            align-items: center;
         }
         .nav-links li {
             margin-left: 2rem;
@@ -108,6 +111,130 @@
             background-color: var(--dark-brown);
             margin: 3px 0;
             transition: 0.3s;
+        }
+
+        /* --- STYLE PROFIL NAVIGASI --- */
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+            margin-left: 2rem;
+            display: none; /* Hidden sebelum login */
+        }
+        .profile-avatar {
+            width: 40px; height: 40px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 1.2rem;
+        }
+        .profile-dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0; top: 50px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            width: 250px;
+            padding: 1.5rem;
+            text-align: left;
+            border: 1px solid #eee;
+            z-index: 1001;
+        }
+        .profile-dropdown-menu.active { display: block; }
+        .profile-info h4 { margin-bottom: 0; color: var(--dark-brown); }
+        .profile-info p { font-size: 0.8rem; color: #777; margin-bottom: 1rem; }
+        .logout-btn {
+            background-color: #ffebee; color: #d32f2f;
+            border: none; padding: 0.5rem; width: 100%;
+            cursor: pointer; border-radius: 4px; font-weight: bold;
+        }
+        .logout-btn:hover { background-color: #ffcdd2; }
+
+        /* --- STYLE SERVICES BARU (SPLIT VIEW) --- */
+        .service-container {
+            display: flex;
+            gap: 2rem;
+            min-height: 450px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+
+        /* Bagian Kiri (Menu) */
+        .service-menu {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .service-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: #f4f4f4;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            transition: 0.3s;
+            font-family: var(--font-heading);
+        }
+        .tab-btn.active {
+            background: var(--secondary);
+            color: white;
+        }
+        .service-list-dynamic {
+            list-style: none;
+            margin-top: 10px;
+            animation: fadeIn 0.5s;
+        }
+        .service-list-dynamic li {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            color: var(--dark-brown);
+            display: flex; justify-content: space-between;
+        }
+        .service-list-dynamic li:last-child { border-bottom: none; }
+
+        /* Bagian Kanan (Gambar Slideshow) */
+        .service-gallery {
+            flex: 1.2;
+            position: relative;
+            background-color: #ffffff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .gallery-loading-text {
+            position: absolute;
+            z-index: 0;
+            color: #999;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        .gallery-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out; /* Transisi diperhalus */
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1; /* Di atas teks loading */
+            background-color: #f4f4f4; /* Mencegah transparan saat loading */
+        }
+        .gallery-img.active { opacity: 0; }
+
+        /* Responsive Service */
+        @media (max-width: 768px) {
+            .service-container { flex-direction: column-reverse; }
+            .service-gallery { height: 250px; }
         }
 
         /* Penambahan login*/
@@ -376,7 +503,7 @@
             height: 400px;
             object-fit: cover;
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 5px;
             background: #fff;
         }
 
@@ -399,6 +526,10 @@
             border: 1px solid #eee;
             transition: all 0.3s ease;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
         }
         .service:hover {
             border-color: var(--secondary);
@@ -408,6 +539,7 @@
             font-size: 1.3rem;
             color: var(--dark-brown);
             margin: 0;
+            
         }
 
         /* --- Booking Section --- */
@@ -751,6 +883,36 @@
             nav {
                 padding: 1rem;
             }
+
+            .logo {
+                /* Margin auto tetap jalan untuk mendorong elemen kanan */
+                margin-right: auto;
+                order: 0;
+            }
+
+            .user-profile {
+                order: 1; /* Urutan ke-2 secara visual */
+                margin-left: 0; /* Reset margin desktop */
+                margin-right: 1rem; /* Beri jarak dengan hamburger */
+            }
+
+            .hamburger {
+                display: flex;
+                order: 2; /* Urutan terakhir secara visual */
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: #fff;
+                flex-direction: column;
+                padding: 2rem 0;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+                z-index: 999; 
+            }
             .nav-links {
                 display: none;
                 position: absolute;
@@ -847,6 +1009,17 @@
                 <span></span>
                 <span></span>
             </div>
+            <div class="user-profile" onclick="toggleProfileMenu()">
+            <div class="profile-avatar" id="nav-avatar">U</div>
+                <div class="profile-dropdown-menu" id="profile-menu">
+                    <div class="profile-info">
+                        <h4 id="nav-name">Nama User</h4>
+                        <p id="nav-email">user@email.com</p>
+                    </div>
+                    <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
+                    <button class="logout-btn" onclick="logout()">Log Out</button>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -876,20 +1049,23 @@
 
     <section id="menu" class="fade-out">
         <button class="back-btn" onclick="goBack('#about')">Back to About</button>
-        <h2>Services List</h2>
-        <div class="services">
-            <div class="service"><h3 class="service-list-item">Hair Cut</h3></div>
-            <div class="service"><h3 class="service-list-item">Hair Coloring</h3></div>
-            <div class="service"><h3 class="service-list-item">Hair Straightening</h3></div>
-            <div class="service"><h3 class="service-list-item">Hair Smoothing</h3></div>
-            <div class="service"><h3 class="service-list-item">Hair Rebonding</h3></div>
-            <div class="service"><h3 class="service-list-item">Hair Perm</h3></div>
-            <div class="service"><h3 class="service-list-item">Hair Mask</h3></div>
-            <div class="service"><h3 class="service-list-item">Creambath</h3></div>
-            <div class="service"><h3 class="service-list-item">Bun / Hair Do</h3></div>
-            <div class="service"><h3 class="service-list-item">Daily Makeup</h3></div>
-            <div class="service"><h3 class="service-list-item">Graduation Makeup</h3></div>
-            <div class="service"><h3 class="service-list-item">Wedding / Engagement Makeup</h3></div>
+        <h2>Our Services</h2>
+        
+        <div class="service-container">
+            <div class="service-menu">
+                <div class="service-tabs">
+                    <button class="tab-btn active" onclick="switchServiceCategory('hair')">Hair Services</button>
+                    <button class="tab-btn" onclick="switchServiceCategory('makeup')">Makeup Services</button>
+                </div>
+                
+                <div id="service-content-text">
+                    </div>
+            </div>
+
+            <div class="service-gallery">
+                <span class="gallery-loading-text">Loading...</span>
+                <img id="service-slideshow" class="gallery-img active" src="" alt="">
+            </div>
         </div>
     </section>
 
@@ -1081,92 +1257,17 @@
         </div>
     </div>
     <script>
-        /* =========================================
-       0. AUTHENTICATION SYSTEM (BARU)
-       ========================================= */
-    
-    let isLoginMode = true; // Status awal adalah Login
-
-    function toggleAuthMode() {
-        isLoginMode = !isLoginMode; // Balik status (True jadi False, dst)
-
-        const title = document.getElementById('auth-title');
-        const subtitle = document.getElementById('auth-subtitle');
-        const btn = document.getElementById('auth-btn');
-        const toggleText = document.getElementById('auth-toggle-text');
-        const toggleLink = document.getElementById('auth-toggle-link');
-        const extraFields = document.getElementById('signup-only-fields');
-
-        if (isLoginMode) {
-            // Mode Login
-            title.innerText = "Welcome Back";
-            subtitle.innerText = "Silakan login untuk melanjutkan booking.";
-            btn.innerText = "Masuk (Login)";
-            toggleText.innerText = "Belum punya akun? ";
-            toggleLink.innerText = "Daftar Sekarang";
-            extraFields.style.display = "none";
-        } else {
-            // Mode Sign Up
-            title.innerText = "Buat Akun Baru";
-            subtitle.innerText = "Bergabunglah dengan BeauCall hari ini.";
-            btn.innerText = "Daftar (Sign Up)";
-            toggleText.innerText = "Sudah punya akun? ";
-            toggleLink.innerText = "Login Disini";
-            extraFields.style.display = "block";
-        }
-    }
-
-    function handleAuth(event) {
-        event.preventDefault(); // Mencegah reload halaman
-
-        const username = document.getElementById('auth-username').value;
-        const password = document.getElementById('auth-password').value;
-        
-        // Validasi Dasar
-        if (!username || !password) {
-            showCustomAlert("Username dan Password wajib diisi!", "Gagal Masuk");
-            return;
-        }
-
-        // Validasi Tambahan untuk Sign Up
-        if (!isLoginMode) {
-            const email = document.getElementById('auth-email').value;
-            const phone = document.getElementById('auth-phone').value;
-            
-            if (!email || !phone) {
-                showCustomAlert("Email dan Nomor WhatsApp wajib diisi untuk pendaftaran.", "Data Tidak Lengkap");
-                return;
-            }
-        }
-
-        // Simulasi Loading Singkat
-        const btn = document.getElementById('auth-btn');
-        const originalText = btn.innerText;
-        btn.innerText = "Memproses...";
-        btn.disabled = true;
-
-        setTimeout(() => {
-            // Tutup Overlay
-            document.getElementById('login-overlay').style.display = 'none';
-            
-            // Tampilkan Pesan Sukses
-            if (isLoginMode) {
-                showCustomAlert(`Selamat datang kembali, ${username}!`, "Login Berhasil");
-                // Auto fill nama di form booking (opsional, fitur manis)
-                document.getElementById('name').value = username;
-            } else {
-                showCustomAlert("Akun Anda berhasil dibuat! Silakan nikmati layanan kami.", "Pendaftaran Berhasil");
-                document.getElementById('name').value = username;
-                document.getElementById('whatsapp').value = document.getElementById('auth-phone').value;
-            }
-        }, 1000);
-    }
-
-    
     /* =========================================
-       1. SYSTEM & NAVIGATION LOGIC 
+       0. SYSTEM CORE & UTILITIES
        ========================================= */
     const TRANSITION_DELAY = 500; 
+    let currentUser = null; 
+    let isLoginMode = true; 
+    let selectedSalon = null;
+    let currentEta = ""; 
+    let finalPaymentData = {};
+    let slideInterval; 
+
     /* --- CUSTOM ALERT FUNCTIONS --- */
     function showCustomAlert(message, title = "BeauCall Menyatakan") {
         document.getElementById('custom-alert-title').innerText = title;
@@ -1178,9 +1279,9 @@
         document.getElementById('custom-alert-overlay').style.display = 'none';
     }
 
+    /* --- NAVIGATION --- */
     function toggleMenu() {
-        const navLinks = document.querySelector('.nav-links');
-        navLinks.classList.toggle('active');
+        document.querySelector('.nav-links').classList.toggle('active');
     }
 
     function navigateTo(targetId) {
@@ -1204,6 +1305,8 @@
         }, 50);
     }
     
+    function goBack(targetId) { navigateTo(targetId); }
+
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -1212,19 +1315,197 @@
         });
     });
 
-    function goBack(targetId) { navigateTo(targetId); }
+    /* =========================================
+       1. AUTHENTICATION & PROFILE LOGIC
+       ========================================= */
+    
+    function toggleAuthMode() {
+        isLoginMode = !isLoginMode; 
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        const btn = document.getElementById('auth-btn');
+        const toggleText = document.getElementById('auth-toggle-text');
+        const toggleLink = document.getElementById('auth-toggle-link');
+        const extraFields = document.getElementById('signup-only-fields');
 
-    window.addEventListener('load', () => {
-        document.querySelectorAll('section').forEach(sec => { sec.style.display = 'none'; });
-        const homeSection = document.querySelector('#home');
-        homeSection.style.display = 'flex'; 
-        homeSection.classList.add('fade-in');
-    });
+        if (isLoginMode) {
+            title.innerText = "Welcome Back";
+            subtitle.innerText = "Silakan login untuk melanjutkan booking.";
+            btn.innerText = "Masuk (Login)";
+            toggleText.innerText = "Belum punya akun? ";
+            toggleLink.innerText = "Daftar Sekarang";
+            extraFields.style.display = "none";
+        } else {
+            title.innerText = "Buat Akun Baru";
+            subtitle.innerText = "Bergabunglah dengan BeauCall hari ini.";
+            btn.innerText = "Daftar (Sign Up)";
+            toggleText.innerText = "Sudah punya akun? ";
+            toggleLink.innerText = "Login Disini";
+            extraFields.style.display = "block";
+        }
+    }
+
+    function handleAuth(event) {
+        event.preventDefault(); 
+        const username = document.getElementById('auth-username').value;
+        const password = document.getElementById('auth-password').value;
+        const btn = document.getElementById('auth-btn');
+        const emailInput = document.getElementById('auth-email');
+        const phoneInput = document.getElementById('auth-phone');
+
+        if (!username || !password) {
+            showCustomAlert("Username dan Password wajib diisi!", "Gagal Masuk");
+            return;
+        }
+        if (!isLoginMode && (!emailInput.value || !phoneInput.value)) {
+            showCustomAlert("Email dan Nomor WhatsApp wajib diisi untuk pendaftaran.", "Data Tidak Lengkap");
+            return;
+        }
+
+        const originalText = btn.innerText;
+        btn.innerText = "Memproses...";
+        btn.disabled = true;
+
+        setTimeout(() => {
+            document.getElementById('login-overlay').style.display = 'none';
+            const userEmail = isLoginMode ? `${username.toLowerCase().replace(/\s/g, '')}@gmail.com` : emailInput.value;
+            
+            // Set Data Profil
+            currentUser = { name: username, email: userEmail };
+            document.getElementById('nav-name').innerText = username;
+            document.getElementById('nav-email').innerText = userEmail;
+            document.getElementById('nav-avatar').innerText = username.charAt(0).toUpperCase();
+            document.querySelector('.user-profile').style.display = 'block'; 
+            
+            // Auto fill form booking
+            document.getElementById('name').value = username;
+            if(!isLoginMode) document.getElementById('whatsapp').value = phoneInput.value;
+
+            const successMsg = isLoginMode ? `Selamat datang kembali, ${username}!` : "Akun Anda berhasil dibuat!";
+            showCustomAlert(successMsg, "Login Berhasil");
+            
+            btn.innerText = originalText;
+            btn.disabled = false;
+            
+            // Start default service view
+            switchServiceCategory('hair');
+
+        }, 1000);
+    }
+
+    function toggleProfileMenu() {
+        document.getElementById('profile-menu').classList.toggle('active');
+    }
+
+    function logout() {
+        currentUser = null;
+        document.querySelector('.user-profile').style.display = 'none';
+        document.getElementById('profile-menu').classList.remove('active');
+        document.getElementById('login-overlay').style.display = 'flex'; 
+        document.getElementById('auth-username').value = '';
+        document.getElementById('auth-password').value = '';
+        
+        // Reset ke mode login awal
+        if (!isLoginMode) toggleAuthMode();
+    }
 
     /* =========================================
-       2. REGION & DATA LOGIC
+       2. DYNAMIC SERVICE SLIDESHOW (FIXED)
        ========================================= */
-    // Database Region (Sama seperti sebelumnya)
+    
+    const serviceData = {
+        'hair': {
+            items: [
+                "Hair Cut", 
+                "Hair Coloring", 
+                "Hair Smoothing/Straightening", 
+                "Hair Rebonding",
+                "Hair Perm", 
+                "Hair Mask/Hair Do", 
+            ],
+            images: [
+                "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=80", 
+                "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=800&q=80"
+            ]
+        },
+        'makeup': {
+            items: [
+                "Daily Makeup", 
+                "Graduation Makeup", 
+                "Wedding Makeup", 
+                "Engagement Makeup", 
+            ],
+            images: [
+                "https://plus.unsplash.com/premium_photo-1670006626755-41cb27400b05?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
+            ]
+        }
+    };
+
+    let currentImgIndex = 0; // Index global untuk tracking gambar
+
+    function switchServiceCategory(category) {
+        // 1. Update Tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
+        });
+
+        // 2. Render Menu List
+        const listContainer = document.getElementById('service-content-text');
+        const data = serviceData[category];
+        let html = '<ul class="service-list-dynamic">';
+        data.items.forEach(item => { html += `<li>${item} <i class="fas fa-check" style="color:var(--secondary)"></i></li>`; });
+        html += '</ul>';
+        listContainer.innerHTML = html;
+
+        // 3. Start Slideshow
+        startSlideshow(data.images);
+    }
+
+    function startSlideshow(images) {
+        const imgElement = document.getElementById('service-slideshow');
+        
+        if (slideInterval) clearInterval(slideInterval);
+        
+        // Reset ke gambar pertama
+        currentImgIndex = 0;
+        imgElement.src = images[currentImgIndex];
+        imgElement.style.opacity = 1; 
+        
+        // Fungsi Ganti Gambar (BERURUTAN)
+        const changeImage = () => {
+            // Fade Out
+            imgElement.style.opacity = 0; 
+            
+            setTimeout(() => {
+                // Increment Index Berurutan (Sequential Loop)
+                currentImgIndex++;
+                
+                // Jika sudah sampai akhir array, kembali ke 0
+                if (currentImgIndex >= images.length) {
+                    currentImgIndex = 0;
+                }
+
+                // Ganti Source Gambar
+                imgElement.src = images[currentImgIndex];
+                
+                // Fade In kembali
+                imgElement.style.opacity = 1; 
+                
+            }, 800); // Durasi fade out
+        };
+
+        // Set interval 3.5 detik
+        slideInterval = setInterval(changeImage, 3500);
+    }
+
+    /* =========================================
+       3. BOOKING & PAYMENT LOGIC
+       ========================================= */
+    // (Data Region & Salon sama seperti sebelumnya)
     const regionData = {
         'jakpus': { eta: "20 - 30 Menit", salons: [{ id: 'jp-1', name: "BeauSalon Jakarta Pusat", desc: "Cabang Utama.", rating: 5.0 }, { id: 'jp-2', name: "Menteng Hair Expert", desc: "Partner.", rating: 4.8 }] },
         'jaksel': { eta: "30 - 45 Menit", salons: [{ id: 'js-1', name: "BeauSalon Jakarta Selatan", desc: "Cabang Utama.", rating: 4.9 }, { id: 'js-2', name: "Kemang Beauty", desc: "Partner.", rating: 4.7 }] },
@@ -1236,10 +1517,6 @@
         'tangerang': { eta: "40 - 60 Menit", salons: [{ id: 'tng-1', name: "BeauSalon Tangerang", desc: "Cabang Utama.", rating: 4.9 }, { id: 'tng-2', name: "Gading Serpong MUA", desc: "Partner.", rating: 4.7 }] },
         'bogor': { eta: "60 - 90 Menit", salons: [{ id: 'bgr-1', name: "BeauSalon Bogor", desc: "Cabang Utama.", rating: 4.7 }, { id: 'bgr-2', name: "Sentul City Stylist", desc: "Partner.", rating: 4.6 }] }
     };
-
-    let selectedSalon = null;
-    let currentEta = ""; 
-    let finalPaymentData = {}; // Menyimpan data sementara
 
     function toggleBankOption(show) {
         const bankContainer = document.getElementById('bank-dropdown-container');
@@ -1259,9 +1536,8 @@
         const paymentSection = document.getElementById('payment-section');
         const confirmBtn = document.getElementById('confirm-booking-btn');
         
-        // --- UPDATE: Ganti alert biasa dengan Custom Alert ---
         if (!service || !region) {
-            showCustomAlert("Mohon pilih 'Daerah Domisili' dan 'Layanan' terlebih dahulu agar kami bisa mencari salon terdekat.", "Layanan Belum Dipilih");
+            showCustomAlert("Mohon pilih 'Daerah Domisili' dan 'Layanan' terlebih dahulu.", "Layanan Belum Dipilih");
             salonResultsSection.style.display = 'none';
             return;
         }
@@ -1280,7 +1556,6 @@
         confirmBtn.style.opacity = "0.5";
         confirmBtn.innerText = "Pilih Salon & Pembayaran Terlebih Dahulu"; 
 
-        // Reset inputs
         const radios = document.getElementsByName('payment_method');
         for(let i=0;i<radios.length;i++) radios[i].checked = false;
         toggleBankOption(false);
@@ -1313,228 +1588,21 @@
         });
         salonResultsSection.style.display = 'block';
         setTimeout(() => { salonResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
-    }   
-
-    /* =========================================
-       4. REVIEW SYSTEM (UPDATED)
-       ========================================= */
-
-    // Database Review dengan Nama Salon Cabang
-    const reviewDatabase = {
-        'jakpus': [
-            { name: "Sarah A.", salon: "BeauSalon Jakarta Pusat", text: "Stylistnya on time banget ke Menteng. Hasil potongannya rapi.", rating: 5 },
-            { name: "Dina M.", salon: "Menteng Hair Expert", text: "Potong rambut di kantor jadi gampang. Hemat waktu banget.", rating: 5 },
-            { name: "Rina S.", salon: "BeauSalon Jakarta Pusat", text: "Suka banget sama pelayanan home servicenya, ramah dan sopan.", rating: 4 },
-            { name: "Putri K.", salon: "Menteng Hair Expert", text: "Harga affordable untuk layanan senyaman ini di Jakarta Pusat.", rating: 5 }
-        ],
-        'jaksel': [
-            { name: "Jessica T.", salon: "BeauSalon Jakarta Selatan", text: "Makeup wisuda panggil ke Kemang, hasilnya flawless banget!", rating: 5 },
-            { name: "Amanda P.", salon: "Kemang Beauty Home", text: "Creambath di rumah rasanya kayak di salon mahal Jaksel.", rating: 5 },
-            { name: "Bella R.", salon: "BeauSalon Jakarta Selatan", text: "Stylistnya gaul dan ngerti trend rambut sekarang.", rating: 4 },
-            { name: "Clara W.", salon: "Kemang Beauty Home", text: "Recommended buat yang mager keluar macet-macetan.", rating: 5 }
-        ],
-        'jakbar': [
-            { name: "Vivi L.", salon: "BeauSalon Jakarta Barat", text: "Smoothing rambut di rumah hasil tetep badai. Thanks BeauCall!", rating: 5 },
-            { name: "Lina T.", salon: "Puri Indah Glamour", text: "Puri Indah area tercover dengan baik. Stylist sopan.", rating: 4 },
-            { name: "Grace O.", salon: "BeauSalon Jakarta Barat", text: "Praktis banget buat ibu rumah tangga kayak saya.", rating: 5 }
-        ],
-        'jaktim': [
-            { name: "Nadia H.", salon: "BeauSalon Jakarta Timur", text: "Seneng banget ada layanan ini di Rawamangun.", rating: 5 },
-            { name: "Siti N.", salon: "Rawamangun Cuts", text: "Murah tapi gak murahan. Stylistnya pro.", rating: 4 },
-            { name: "Dewi A.", salon: "BeauSalon Jakarta Timur", text: "Langganan potong rambut anak di rumah.", rating: 5 }
-        ],
-        'jakut': [
-            { name: "Tiffany.", salon: "BeauSalon Jakarta Utara", text: "MUA nya dateng tepat waktu ke PIK. Makeup tahan lama.", rating: 5 },
-            { name: "Sherly.", salon: "PIK Hair Studio", text: "Hair treatment sambil nungguin anak sekolah. Mantap.", rating: 5 },
-            { name: "Angel.", salon: "BeauSalon Jakarta Utara", text: "Salon panggilan terbaik di Pluit sejauh ini.", rating: 4 }
-        ],
-        'bekasi': [
-            { name: "Rani B.", salon: "BeauSalon Bekasi", text: "Akhirnya di Bekasi ada salon panggilan yang bagus! Galaxy area aman.", rating: 5 },
-            { name: "Wulan D.", salon: "Galaxy Home Spa", text: "Hemat waktu banget gak perlu macet ke mall.", rating: 4 },
-            { name: "Tya S.", salon: "BeauSalon Bekasi", text: "Stylist Bekasi ramah-ramah. Suka pijatannya pas creambath.", rating: 5 },
-            { name: "Fitri H.", salon: "Galaxy Home Spa", text: "Baru coba sekali langsung cocok.", rating: 5 }
-        ],
-        'depok': [
-            { name: "Ayu D.", salon: "BeauSalon Depok", text: "Anak UI wajib coba sih, praktis banget buat wisuda.", rating: 5 },
-            { name: "Laras P.", salon: "Cinere Beauty", text: "Cinere area tercover. Stylistnya sabar banget.", rating: 5 },
-            { name: "Indah K.", salon: "BeauSalon Depok", text: "Harga mahasiswa tapi kualitas oke.", rating: 4 }
-        ],
-        'tangerang': [
-            { name: "Gisel.", salon: "BeauSalon Tangerang", text: "BSD Area stylistnya cepet sampainya. Alatnya bersih.", rating: 5 },
-            { name: "Monika.", salon: "Gading Serpong MUA", text: "Makeup lamaran panggil ke rumah, puas banget!", rating: 5 },
-            { name: "Vera.", salon: "BeauSalon Tangerang", text: "Layanan Gading Serpong top markotop.", rating: 5 }
-        ],
-        'bogor': [
-            { name: "Nengsih.", salon: "BeauSalon Bogor", text: "Teh stylistna bageur pisan. Hasilna geulis.", rating: 5 },
-            { name: "Sari M.", salon: "Sentul City Stylist", text: "Sentul City aman terjangkau. Makasih BeauCall.", rating: 5 },
-            { name: "Hana F.", salon: "BeauSalon Bogor", text: "Perawatan rambut di rumah adem banget udaranya.", rating: 4 }
-        ]
-    };
-
-    function openReviews() {
-        const region = document.getElementById('region').value;
-        const modal = document.getElementById('review-modal');
-        const container = document.getElementById('review-list-container');
-        const title = document.getElementById('review-region-title');
-
-        // Reset View ke Read Mode
-        toggleReviewMode('read');
-
-        // VALIDASI
-        if (!region) {
-            showCustomAlert("Silakan pilih 'Daerah Domisili' pada form Booking terlebih dahulu.", "Pilih Daerah");
-            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
-            return;
-        }
-
-        // Ambil Data & Judul
-        const reviews = reviewDatabase[region];
-        const regionName = document.getElementById('region').options[document.getElementById('region').selectedIndex].text;
-        title.innerText = `Menampilkan Ulasan Area: ${regionName}`;
-        container.innerHTML = ""; 
-
-        if (reviews) {
-            // LOGIKA SORTING: 
-            // Pisahkan review "Baru" (inputan user) dan review "Lama" (database dummy)
-            const newReviews = reviews.filter(r => r.isNew === true);
-            const oldReviews = reviews.filter(r => !r.isNew);
-
-            // Acak review lama saja
-            const shuffledOld = [...oldReviews].sort(() => 0.5 - Math.random());
-            
-            // Gabungkan: Review baru DI ATAS, diikuti review lama yang sudah diacak
-            // Kita batasi total tampilan 10 review
-            const finalDisplay = [...newReviews, ...shuffledOld].slice(0, 10);
-
-            finalDisplay.forEach(rev => {
-                let stars = "";
-                for(let i=0; i<rev.rating; i++) stars += '<i class="fas fa-star"></i> ';
-                
-                // Tentukan Tanggal: Jika review baru -> "Baru saja", Jika lama -> Random hari
-                let dateDisplay;
-                if (rev.isNew) {
-                    dateDisplay = "<span style='color:var(--secondary); font-weight:bold;'>Baru saja</span>";
-                } else {
-                    const randomDays = Math.floor(Math.random() * 30) + 1;
-                    dateDisplay = `${randomDays} hari yang lalu`;
-                }
-
-                const card = document.createElement('div');
-                card.className = "review-card";
-                
-                // Highlight background sedikit jika review baru
-                if(rev.isNew) card.style.borderLeft = "3px solid var(--secondary)";
-
-                card.innerHTML = `
-                    <div class="review-header">
-                        <div>
-                            <span class="reviewer-name">${rev.name}</span> 
-                            <span style="font-size:0.8rem; color:var(--secondary); margin-left:5px;">- ${rev.salon}</span>
-                        </div>
-                        <span class="review-stars">${stars}</span>
-                    </div>
-                    <p class="review-text">"${rev.text}"</p>
-                    <p class="review-date">${dateDisplay}</p>
-                `;
-                container.appendChild(card);
-            });
-        } else {
-            container.innerHTML = "<p style='text-align:center; padding:20px;'>Belum ada ulasan untuk daerah ini.</p>";
-        }
-
-        modal.style.display = "flex";
     }
 
-    function closeReviewModal() {
-        document.getElementById('review-modal').style.display = "none";
-    }
-
-    // Logika Tulis Review Baru
-    function toggleReviewMode(mode) {
-        const readView = document.getElementById('review-read-view');
-        const writeView = document.getElementById('review-write-view');
-        
-        if (mode === 'write') {
-            readView.style.display = 'none';
-            writeView.style.display = 'block';
-        } else {
-            readView.style.display = 'block';
-            writeView.style.display = 'none';
-        }
-    }
-
-    function submitFakeReview() {
-        const name = document.getElementById('new-review-name').value;
-        const text = document.getElementById('new-review-text').value;
-        const rating = document.getElementById('new-review-rating').value;
-        const region = document.getElementById('region').value;
-
-        if (!name || !text) {
-            showCustomAlert("Mohon isi nama dan komentar Anda.", "Data Belum Lengkap");
-            return;
-        }
-
-        // 1. Pilih Nama Salon (Ambil acak dari database region agar terlihat nyata)
-        let assignedSalon = "BeauCall Service"; // Default
-        if (regionData[region] && regionData[region].salons.length > 0) {
-            // Pilih random salon dari daerah tersebut untuk ditempel ke nama user
-            const randomIdx = Math.floor(Math.random() * regionData[region].salons.length);
-            assignedSalon = regionData[region].salons[randomIdx].name;
-        }
-
-        // 2. Buat Data Review Baru
-        const newReview = {
-            name: name,
-            salon: assignedSalon,
-            text: text,
-            rating: parseInt(rating),
-            isNew: true // Penanda bahwa ini review baru (untuk logika tanggal)
-        };
-
-        // 3. Masukkan ke Database Array (Paling Atas)
-        if (!reviewDatabase[region]) {
-            reviewDatabase[region] = [];
-        }
-        reviewDatabase[region].unshift(newReview); // 'unshift' memasukkan ke urutan pertama
-
-        // 4. Notifikasi & Reset
-        showCustomAlert("Ulasan Anda berhasil ditambahkan!", "Terima Kasih");
-        
-        document.getElementById('new-review-name').value = "";
-        document.getElementById('new-review-text').value = "";
-
-        // 5. Refresh List agar review baru langsung terlihat
-        toggleReviewMode('read');
-        openReviews(); 
-    }
-
-    function closeReviewModal() {
-        document.getElementById('review-modal').style.display = "none";
-    }
-
-
-    /* =========================================
-       3. FAKE PAYMENT SYSTEM (LOGIKA BARU)
-       ========================================= */
-
-    // Validasi sebelum membuka Modal
     function initiatePayment() {
         const form = document.getElementById('booking-form');
         
-        // --- UPDATE 1: Cek Kelengkapan Form ---
         if (!form.checkValidity()) {
-            showCustomAlert("Mohon lengkapi data Nama, WhatsApp, Alamat, Tanggal, dan Waktu pada formulir di atas sebelum melanjutkan.", "Data Belum Lengkap");
-            // form.reportValidity(); // Opsional: dihapus agar tidak bentrok visual dengan popup
+            showCustomAlert("Mohon lengkapi data Nama, WhatsApp, Alamat, Tanggal, dan Waktu pada formulir.", "Data Belum Lengkap");
             return;
         }
 
-        // --- UPDATE 2: Cek Salon ---
         if (!selectedSalon) {
             showCustomAlert("Mohon pilih salah satu Salon Partner dari daftar di bawah.", "Salon Belum Dipilih");
             return;
         }
 
-        // Cek Metode Pembayaran
         const paymentRadios = document.getElementsByName('payment_method');
         let paymentMethod = "";
         for (let i = 0; i < paymentRadios.length; i++) {
@@ -1544,39 +1612,29 @@
             }
         }
 
-        // --- UPDATE 3: Cek Metode Bayar ---
         if (paymentMethod === "") {
-            showCustomAlert("Mohon pilih Metode Pembayaran (QRIS atau M-Banking) untuk melanjutkan.", "Pembayaran Belum Dipilih");
+            showCustomAlert("Mohon pilih Metode Pembayaran (QRIS atau M-Banking).", "Pembayaran Belum Dipilih");
             return;
         }
 
         let bankDetail = "";
         if (paymentMethod === "M-Banking") {
             const selectedBank = document.getElementById('selected-bank').value;
-            // --- UPDATE 4: Cek Bank ---
             if (selectedBank === "") {
-                showCustomAlert("Mohon pilih Bank Tujuan untuk metode transfer M-Banking.", "Bank Belum Dipilih");
+                showCustomAlert("Mohon pilih Bank Tujuan untuk metode M-Banking.", "Bank Belum Dipilih");
                 return;
             }
             bankDetail = selectedBank;
         }
 
-        // Simpan Data untuk dikirim ke WA nanti
-        finalPaymentData = {
-            method: paymentMethod,
-            bank: bankDetail
-        };
-
-        // Buka Modal Pembayaran
+        finalPaymentData = { method: paymentMethod, bank: bankDetail };
         openPaymentModal(paymentMethod, bankDetail);
     }
 
-    // Fungsi Membuka Modal
     function openPaymentModal(method, bank) {
         const modal = document.getElementById('payment-modal');
         const contentDiv = document.getElementById('dynamic-payment-content');
         
-        // Reset View Modal
         document.getElementById('payment-instruction').style.display = 'block';
         document.getElementById('payment-loading').style.display = 'none';
         document.getElementById('payment-success').style.display = 'none';
@@ -1584,19 +1642,16 @@
         let htmlContent = "";
 
         if (method === "QRIS") {
-            // Tampilan QRIS Dummy (Pake API QR Code Generator)
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BeauCallPayment-${Math.floor(Math.random() * 10000)}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BeauCall-${Math.floor(Math.random() * 10000)}`;
             htmlContent = `
                 <div class="qris-container">
                     <p style="margin-bottom:10px; font-weight:bold;">Scan QRIS ini</p>
                     <img src="${qrUrl}" alt="QRIS Code">
-                    <p style="margin-top:5px; font-size:0.8rem;">Supported: GoPay, OVO, Dana, ShopeePay, Mobile Banking</p>
+                    <p style="margin-top:5px; font-size:0.8rem;">Supported: GoPay, OVO, Dana, ShopeePay</p>
                 </div>
-                <p style="text-align:center;">Total Tagihan: <strong>Menunggu Konfirmasi Salon</strong></p>
+                <p style="text-align:center;">Total Tagihan: <strong>Rp 150.000</strong> (Estimasi)</p>
             `;
         } else {
-            // Tampilan Transfer Bank
-            // Generate nomor rekening dummy acak
             const dummyRek = Math.floor(1000000000 + Math.random() * 9000000000);
             htmlContent = `
                 <div class="bank-details-box">
@@ -1604,7 +1659,7 @@
                     <span class="account-number">${dummyRek}</span>
                     <p>a.n. <strong>PT BeauCall Indonesia</strong></p>
                 </div>
-                <p style="text-align:center; margin-top:1rem;">Silakan transfer sesuai total tagihan nanti.</p>
+                <p style="text-align:center; margin-top:1rem;">Silakan transfer sesuai total tagihan.</p>
             `;
         }
 
@@ -1612,35 +1667,24 @@
         modal.style.display = "flex";
     }
 
-    function closePaymentModal() {
-        document.getElementById('payment-modal').style.display = "none";
-    }
-
-    // Fungsi Pura-pura Proses Bayar
     function fakePaymentProcess() {
-        // 1. Sembunyikan instruksi, tampilkan loading
         document.getElementById('payment-instruction').style.display = 'none';
         document.getElementById('payment-loading').style.display = 'block';
 
-        // 2. Tunggu 2 detik (Simulasi loading server)
         setTimeout(() => {
             document.getElementById('payment-loading').style.display = 'none';
             document.getElementById('payment-success').style.display = 'block';
             
-            // 3. Mainkan Audio
             const audio = document.getElementById('success-sound');
-            audio.play().catch(e => console.log("Audio play blocked by browser policy"));
+            if(audio) audio.play().catch(e => console.log("Audio block"));
 
-            // 4. Redirect ke WA setelah 2 detik
             setTimeout(() => {
                 sendToWhatsApp();
                 closePaymentModal();
             }, 2000);
-
         }, 2000);
     }
 
-    // Kirim ke WhatsApp (Versi Final)
     function sendToWhatsApp() {
         const name = document.getElementById('name').value;
         const whatsapp = document.getElementById('whatsapp').value;
@@ -1651,7 +1695,6 @@
         const time = document.getElementById('time').value;
         const service = document.getElementById('service').value;
 
-        // Format Pesan WhatsApp Baru
         const message = `⋆𐙚 Halo BeauCall
 Pembayaran BERHASIL via Website. 
 ✮ STATUS: SUDAH DIBAYAR
@@ -1679,16 +1722,143 @@ Metode Bayar:
 
 Terima Kasih! — ★`;
 
-        // Mengarahkan ke WhatsApp
         const waUrl = `https://wa.me/6285694870477?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     }
 
+    /* =========================================
+       4. REVIEW SYSTEM
+       ========================================= */
+    const reviewDatabase = {
+        'jakpus': [ { name: "Sarah A.", salon: "BeauSalon Jakarta Pusat", text: "Stylistnya on time banget!", rating: 5 }, { name: "Dina M.", salon: "Menteng Hair Expert", text: "Potong rambut di kantor jadi gampang.", rating: 5 } ],
+        'jaksel': [ { name: "Jessica T.", salon: "BeauSalon Jaksel", text: "Makeup wisuda flawless!", rating: 5 } ],
+        'bekasi': [ { name: "Rani B.", salon: "BeauSalon Bekasi", text: "Akhirnya di Bekasi ada yg bagus!", rating: 5 } ],
+        // Tambahkan data dummy lainnya jika perlu
+    };
 
+    function openReviews() {
+        const region = document.getElementById('region').value;
+        const modal = document.getElementById('review-modal');
+        const container = document.getElementById('review-list-container');
+        const title = document.getElementById('review-region-title');
 
-    document.getElementById('search-salon-btn').addEventListener('click', handleBookingSearch);
+        toggleReviewMode('read');
+
+        if (!region) {
+            showCustomAlert("Silakan pilih 'Daerah Domisili' pada form Booking terlebih dahulu.", "Pilih Daerah");
+            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        const reviews = reviewDatabase[region] || [];
+        const regionName = document.getElementById('region').options[document.getElementById('region').selectedIndex].text;
+        title.innerText = `Menampilkan Ulasan Area: ${regionName}`;
+        container.innerHTML = ""; 
+
+        if (reviews.length > 0) {
+            const newReviews = reviews.filter(r => r.isNew === true);
+            const oldReviews = reviews.filter(r => !r.isNew);
+            const shuffledOld = [...oldReviews].sort(() => 0.5 - Math.random());
+            const finalDisplay = [...newReviews, ...shuffledOld].slice(0, 10);
+
+            finalDisplay.forEach(rev => {
+                let stars = "";
+                for(let i=0; i<rev.rating; i++) stars += '<i class="fas fa-star"></i> ';
+                
+                let dateDisplay;
+                if (rev.isNew) {
+                    dateDisplay = "<span style='color:var(--secondary); font-weight:bold;'>Baru saja</span>";
+                } else {
+                    const randomDays = Math.floor(Math.random() * 30) + 1;
+                    dateDisplay = `${randomDays} hari yang lalu`;
+                }
+
+                const card = document.createElement('div');
+                card.className = "review-card";
+                if(rev.isNew) card.style.borderLeft = "3px solid var(--secondary)";
+
+                card.innerHTML = `
+                    <div class="review-header">
+                        <div><span class="reviewer-name">${rev.name}</span> <span style="font-size:0.8rem; color:var(--secondary); margin-left:5px;">- ${rev.salon}</span></div>
+                        <span class="review-stars">${stars}</span>
+                    </div>
+                    <p class="review-text">"${rev.text}"</p>
+                    <p class="review-date">${dateDisplay}</p>
+                `;
+                container.appendChild(card);
+            });
+        } else {
+            container.innerHTML = "<p style='text-align:center; padding:20px;'>Belum ada ulasan untuk daerah ini.</p>";
+        }
+        modal.style.display = "flex";
+    }
+
+    function closeReviewModal() { document.getElementById('review-modal').style.display = "none"; }
+
+    function toggleReviewMode(mode) {
+        const readView = document.getElementById('review-read-view');
+        const writeView = document.getElementById('review-write-view');
+        if (mode === 'write') {
+            readView.style.display = 'none';
+            writeView.style.display = 'block';
+        } else {
+            readView.style.display = 'block';
+            writeView.style.display = 'none';
+        }
+    }
+
+    function submitFakeReview() {
+        const name = document.getElementById('new-review-name').value;
+        const text = document.getElementById('new-review-text').value;
+        const rating = document.getElementById('new-review-rating').value;
+        const region = document.getElementById('region').value;
+
+        if (!name || !text) {
+            showCustomAlert("Mohon isi nama dan komentar Anda.", "Data Belum Lengkap");
+            return;
+        }
+
+        let assignedSalon = "BeauCall Service"; 
+        if (regionData[region] && regionData[region].salons.length > 0) {
+            const randomIdx = Math.floor(Math.random() * regionData[region].salons.length);
+            assignedSalon = regionData[region].salons[randomIdx].name;
+        }
+
+        const newReview = { name: name, salon: assignedSalon, text: text, rating: parseInt(rating), isNew: true };
+
+        if (!reviewDatabase[region]) { reviewDatabase[region] = []; }
+        reviewDatabase[region].unshift(newReview); 
+
+        showCustomAlert("Ulasan Anda berhasil ditambahkan!", "Terima Kasih");
+        
+        document.getElementById('new-review-name').value = "";
+        document.getElementById('new-review-text').value = "";
+
+        toggleReviewMode('read');
+        openReviews(); 
+    }
+
+    /* =========================================
+       5. EVENT LISTENERS & INITIALIZATION
+       ========================================= */
     
+    // Event Listener untuk tombol-tombol utama (PASTIKAN INI ADA)
+    document.getElementById('search-salon-btn').addEventListener('click', handleBookingSearch);
     document.getElementById('confirm-booking-btn').addEventListener('click', initiatePayment);
+    
+    // Event Listener untuk Form Login (Jika user tekan Enter)
+    const authForm = document.getElementById('auth-form');
+    if(authForm) authForm.addEventListener('submit', handleAuth);
+
+    // Initialize Home Page
+    window.addEventListener('load', () => {
+        document.querySelectorAll('section').forEach(sec => { sec.style.display = 'none'; });
+        const homeSection = document.querySelector('#home');
+        if(homeSection) {
+            homeSection.style.display = 'flex'; 
+            homeSection.classList.add('fade-in');
+        }
+    });
 
 </script>
 </body>

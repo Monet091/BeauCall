@@ -862,6 +862,23 @@
                 height: auto;
                 padding-top: 60px !important;
             }
+            /* service */
+            .service-container { 
+                flex-direction: column-reverse; 
+                height: auto; /* Biarkan container menyesuaikan tinggi */
+            }
+            
+            .service-gallery { 
+                width: 100%;
+                /* UBAH DI SINI: Jangan 250px, tapi buat lebih tinggi atau kotak */
+                height: 400px; /* Cukup tinggi untuk menampilkan wajah model */
+                min-height: 400px; 
+            }
+            
+            /* Opsional: Pastikan gambar fokus ke bagian atas (wajah) agar tidak terpotong leher ke bawah */
+            .gallery-img {
+                object-position: top center; 
+            }
             .home-left-text {
                 padding: 3rem 2rem;
                 align-items: center;
@@ -1063,7 +1080,7 @@
             </div>
 
             <div class="service-gallery">
-                <span class="gallery-loading-text">Loading...</span>
+                <span class="gallery-loading-text"></span>
                 <img id="service-slideshow" class="gallery-img active" src="" alt="">
             </div>
         </div>
@@ -1425,8 +1442,8 @@
             ],
             images: [
                 "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
-                "https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=80", 
-                "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=800&q=80"
+                "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+                "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             ]
         },
         'makeup': {
@@ -1438,8 +1455,8 @@
             ],
             images: [
                 "https://plus.unsplash.com/premium_photo-1670006626755-41cb27400b05?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80",
-                "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
+                "https://plus.unsplash.com/premium_photo-1661857692141-8274e16a7fb9?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "https://images.unsplash.com/photo-1616683693445-77022fe0b528?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             ]
         }
     };

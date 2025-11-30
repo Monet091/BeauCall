@@ -155,7 +155,7 @@
         .service-container {
             display: flex;
             gap: 2rem;
-            min-height: 450px;
+            min-height: 580px;
             background: white;
             border: 1px solid #eee;
             border-radius: 12px;
@@ -1240,8 +1240,13 @@
             </div>
 
             <div id="review-read-view">
+                <select id="review-salon-filter" onchange="renderFilteredReviews()" style="width: 100%; margin-bottom: 1rem; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #fafafa;">
+                    <option value="all">Tampilkan Semua Salon</option>
+                    </select>
+
                 <div id="review-list-container" style="max-height: 300px; overflow-y: auto; text-align: left; padding-right:5px;">
                     </div>
+                
                 <hr style="margin: 1rem 0; border: 0; border-top: 1px dashed #ccc;">
                 <button class="btn" onclick="toggleReviewMode('write')" style="width: 100%;">Tulis Ulasan</button>
             </div>
@@ -1435,15 +1440,19 @@
             items: [
                 "Hair Cut", 
                 "Hair Coloring", 
-                "Hair Smoothing/Straightening", 
+                "Hair Smoothing",
+                "Hair Straightening",
                 "Hair Rebonding",
                 "Hair Perm", 
-                "Hair Mask/Hair Do", 
+                "Hair Mask", 
+                "Hair Do"
             ],
             images: [
                 "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
                 "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
-                "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "https://i.pinimg.com/1200x/92/8d/43/928d4322c6a44cc86ac4536374d2d696.jpg",
+                "https://i.pinimg.com/736x/2d/40/c2/2d40c21651fe247a853aaaed02cf4403.jpg"
             ]
         },
         'makeup': {
@@ -1454,14 +1463,47 @@
                 "Engagement Makeup", 
             ],
             images: [
-                "https://plus.unsplash.com/premium_photo-1670006626755-41cb27400b05?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://plus.unsplash.com/premium_photo-1661857692141-8274e16a7fb9?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1616683693445-77022fe0b528?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                "https://i.pinimg.com/736x/f4/8f/9b/f48f9bf7c2c5ef27e688efa6809a36fb.jpg",
+                "https://i.pinimg.com/736x/30/1e/cf/301ecf577ece1a28bdf4cc208f638313.jpg",
+                "https://i.pinimg.com/736x/37/b4/fe/37b4fe9b635e87cc97da0905d8b81bbd.jpg",
+                "https://i.pinimg.com/736x/a7/59/09/a759095fd709180894e9f8676d609fc4.jpg",
+                "https://i.pinimg.com/736x/9d/b5/73/9db5736ca0b86b774e4bd2959bf0069f.jpg"
             ]
         }
     };
 
-    let currentImgIndex = 0; // Index global untuk tracking gambar
+    
+
+
+    /* =========================================
+       DAFTAR HARGA LAYANAN (MARKET PRICE)
+       ========================================= */
+    const servicePrices = {
+        "Hair Cut": 150000,
+        "Hair Coloring": 550000,
+        "Hair Straightening": 750000,
+        "Hair Smoothing": 800000,
+        "Hair Rebonding": 650000,
+        "Hair Perm": 700000,
+        "Hair Mask": 200000,
+        "Creambath": 180000,
+        "Bun / Hair Do": 250000,
+        "Daily Makeup": 350000,
+        "Graduation Makeup": 550000,
+        "Wedding / Engagement Makeup": 1500000
+    };
+
+    // Fungsi format Rupiah
+    const formatRupiah = (number) => {
+        return new Intl.NumberFormat('id-ID', { 
+            style: 'currency', 
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(number);
+    };
+
+    
+    let currentImgIndex = 0; 
 
     function switchServiceCategory(category) {
         // 1. Update Tabs
@@ -1485,39 +1527,51 @@
     function startSlideshow(images) {
         const imgElement = document.getElementById('service-slideshow');
         
+        // Hentikan timer lama
         if (slideInterval) clearInterval(slideInterval);
         
-        // Reset ke gambar pertama
+        // Reset Gambar Pertama
         currentImgIndex = 0;
         imgElement.src = images[currentImgIndex];
-        imgElement.style.opacity = 1; 
         
-        // Fungsi Ganti Gambar (BERURUTAN)
+        // Pastikan opacity 1 saat awal load
+        imgElement.onload = () => { imgElement.style.opacity = 1; };
+        // Fallback jika sudah cached
+        if(imgElement.complete) imgElement.style.opacity = 1;
+        
+        // Fungsi Ganti Gambar (DIPERBAIKI)
         const changeImage = () => {
-            // Fade Out
+            // 1. Fade Out (Hilangkan gambar lama pelan-pelan)
             imgElement.style.opacity = 0; 
             
+            // 2. Tunggu sampai benar-benar hilang (800ms sesuai CSS transition)
             setTimeout(() => {
-                // Increment Index Berurutan (Sequential Loop)
-                currentImgIndex++;
-                
-                // Jika sudah sampai akhir array, kembali ke 0
-                if (currentImgIndex >= images.length) {
-                    currentImgIndex = 0;
-                }
+                // Pindah Index
+                currentImgIndex = (currentImgIndex + 1) % images.length;
+
+                // Siapkan event listener SEBELUM ganti src
+                // Ini kuncinya: Jangan muncul (opacity 1) sampai gambar selesai loading
+                imgElement.onload = () => {
+                    imgElement.style.opacity = 1; // Fade In hanya jika sudah siap
+                };
 
                 // Ganti Source Gambar
                 imgElement.src = images[currentImgIndex];
-                
-                // Fade In kembali
-                imgElement.style.opacity = 1; 
-                
-            }, 800); // Durasi fade out
+
+                // Fallback untuk koneksi sangat cepat/cache (kadang onload tidak ter-trigger)
+                setTimeout(() => {
+                    if (imgElement.complete && imgElement.style.opacity === "0") {
+                        imgElement.style.opacity = 1;
+                    }
+                }, 100);
+
+            }, 800); // Waktu tunggu fade-out selesai
         };
 
-        // Set interval 3.5 detik
-        slideInterval = setInterval(changeImage, 3500);
+        // Interval ganti gambar diperpanjang sedikit agar user sempat melihat gambar (4.5 detik)
+        slideInterval = setInterval(changeImage, 4500);
     }
+
 
     /* =========================================
        3. BOOKING & PAYMENT LOGIC
@@ -1525,7 +1579,7 @@
     // (Data Region & Salon sama seperti sebelumnya)
     const regionData = {
         'jakpus': { eta: "20 - 30 Menit", salons: [{ id: 'jp-1', name: "BeauSalon Jakarta Pusat", desc: "Cabang Utama.", rating: 5.0 }, { id: 'jp-2', name: "Menteng Hair Expert", desc: "Partner.", rating: 4.8 }] },
-        'jaksel': { eta: "30 - 45 Menit", salons: [{ id: 'js-1', name: "BeauSalon Jakarta Selatan", desc: "Cabang Utama.", rating: 4.9 }, { id: 'js-2', name: "Kemang Beauty", desc: "Partner.", rating: 4.7 }] },
+        'jaksel': { eta: "30 - 45 Menit", salons: [{ id: 'js-1', name: "BeauSalon Jakarta Selatan", desc: "Cabang Utama.", rating: 4.9 }, { id: 'js-2', name: "Kemang Beauty Home", desc: "Partner.", rating: 4.7 }] },
         'jakbar': { eta: "30 - 45 Menit", salons: [{ id: 'jb-1', name: "BeauSalon Jakarta Barat", desc: "Cabang Utama.", rating: 4.8 }, { id: 'jb-2', name: "Puri Indah Glamour", desc: "Partner.", rating: 4.6 }] },
         'jaktim': { eta: "30 - 45 Menit", salons: [{ id: 'jt-1', name: "BeauSalon Jakarta Timur", desc: "Cabang Utama.", rating: 4.8 }, { id: 'jt-2', name: "Rawamangun Cuts", desc: "Partner.", rating: 4.5 }] },
         'jakut': { eta: "30 - 50 Menit", salons: [{ id: 'ju-1', name: "BeauSalon Jakarta Utara", desc: "Cabang Utama.", rating: 4.8 }, { id: 'ju-2', name: "PIK Hair Studio", desc: "Partner.", rating: 4.9 }] },
@@ -1620,6 +1674,7 @@
             return;
         }
 
+        // VALIDASI METODE PEMBAYARAN
         const paymentRadios = document.getElementsByName('payment_method');
         let paymentMethod = "";
         for (let i = 0; i < paymentRadios.length; i++) {
@@ -1644,11 +1699,23 @@
             bankDetail = selectedBank;
         }
 
-        finalPaymentData = { method: paymentMethod, bank: bankDetail };
-        openPaymentModal(paymentMethod, bankDetail);
+        // --- UPDATE: AMBIL HARGA ---
+        const serviceName = document.getElementById('service').value;
+        const price = servicePrices[serviceName] || 0; // Default 0 jika error
+
+        // Simpan ke data final
+        finalPaymentData = { 
+            method: paymentMethod, 
+            bank: bankDetail,
+            price: price,         // Simpan harga angka
+            priceFormatted: formatRupiah(price) // Simpan harga format Rp
+        };
+
+        openPaymentModal(paymentMethod, bankDetail, finalPaymentData.priceFormatted);
     }
 
-    function openPaymentModal(method, bank) {
+// Update: Menerima parameter 'priceDisplay'
+    function openPaymentModal(method, bank, priceDisplay) {
         const modal = document.getElementById('payment-modal');
         const contentDiv = document.getElementById('dynamic-payment-content');
         
@@ -1666,7 +1733,7 @@
                     <img src="${qrUrl}" alt="QRIS Code">
                     <p style="margin-top:5px; font-size:0.8rem;">Supported: GoPay, OVO, Dana, ShopeePay</p>
                 </div>
-                <p style="text-align:center;">Total Tagihan: <strong>Rp 150.000</strong> (Estimasi)</p>
+                <p style="text-align:center; font-size:1.1rem;">Total Tagihan: <strong style="color:var(--secondary);">${priceDisplay}</strong></p>
             `;
         } else {
             const dummyRek = Math.floor(1000000000 + Math.random() * 9000000000);
@@ -1676,7 +1743,9 @@
                     <span class="account-number">${dummyRek}</span>
                     <p>a.n. <strong>PT BeauCall Indonesia</strong></p>
                 </div>
-                <p style="text-align:center; margin-top:1rem;">Silakan transfer sesuai total tagihan.</p>
+                <p style="text-align:center; margin-top:1rem; font-size:1.1rem;">
+                    Total Transfer: <strong style="color:var(--secondary);">${priceDisplay}</strong>
+                </p>
             `;
         }
 
@@ -1723,7 +1792,8 @@
         }
     }
 
-    function sendToWhatsApp() {
+
+function sendToWhatsApp() {
         const name = document.getElementById('name').value;
         const whatsapp = document.getElementById('whatsapp').value;
         const regionRaw = document.getElementById('region');
@@ -1747,6 +1817,7 @@ Alamat: ${address}
 
 𖦹 Detail Layanan:
 Layanan: ${service}
+Biaya: ${finalPaymentData.priceFormatted}
 Tanggal: ${date}
 Jam: ${time} 
 
@@ -1764,40 +1835,167 @@ Terima Kasih! — ★`;
         window.open(waUrl, '_blank');
     }
 
-    /* =========================================
-       4. REVIEW SYSTEM
+
+
+/* =========================================
+       4. REVIEW SYSTEM (UPDATED: FILTER & MORE DATA)
        ========================================= */
+
     const reviewDatabase = {
-        'jakpus': [ { name: "Sarah A.", salon: "BeauSalon Jakarta Pusat", text: "Stylistnya on time banget!", rating: 5 }, { name: "Dina M.", salon: "Menteng Hair Expert", text: "Potong rambut di kantor jadi gampang.", rating: 5 } ],
-        'jaksel': [ { name: "Jessica T.", salon: "BeauSalon Jaksel", text: "Makeup wisuda flawless!", rating: 5 } ],
-        'bekasi': [ { name: "Rani B.", salon: "BeauSalon Bekasi", text: "Akhirnya di Bekasi ada yg bagus!", rating: 5 } ],
-        // Tambahkan data dummy lainnya jika perlu
+        'jakpus': [
+            // BeauSalon Jakarta Pusat
+            { name: "Sarah A.", salon: "BeauSalon Jakarta Pusat", text: "Stylistnya on time banget ke Menteng. Hasil potongannya rapi.", rating: 5 },
+            { name: "Rina S.", salon: "BeauSalon Jakarta Pusat", text: "Pelayanan ramah, alat-alatnya bersih dan steril.", rating: 4 },
+            { name: "Budi T.", salon: "BeauSalon Jakarta Pusat", text: "Potong rambut pria di rumah hasilnya memuaskan.", rating: 5 },
+            { name: "Citra L.", salon: "BeauSalon Jakarta Pusat", text: "Suka banget sama coloring-nya, warnanya keluar banget.", rating: 5 },
+            // Menteng Hair Expert
+            { name: "Dina M.", salon: "Menteng Hair Expert", text: "Potong rambut di kantor jadi gampang. Hemat waktu banget.", rating: 5 },
+            { name: "Putri K.", salon: "Menteng Hair Expert", text: "Harga affordable untuk layanan senyaman ini di Jakarta Pusat.", rating: 5 },
+            { name: "Eko P.", salon: "Menteng Hair Expert", text: "Stylistnya sabar dan teliti. Recomended.", rating: 4 },
+            { name: "Vina D.", salon: "Menteng Hair Expert", text: "Creambath-nya enak banget pijatannya.", rating: 5 }
+        ],
+        'jaksel': [
+            // BeauSalon Jakarta Selatan
+            { name: "Jessica T.", salon: "BeauSalon Jakarta Selatan", text: "Makeup wisuda panggil ke Kemang, hasilnya flawless banget!", rating: 5 },
+            { name: "Bella R.", salon: "BeauSalon Jakarta Selatan", text: "Stylistnya gaul dan ngerti trend rambut sekarang.", rating: 4 },
+            { name: "Karin O.", salon: "BeauSalon Jakarta Selatan", text: "Hairdo untuk lamaran awet seharian. Thanks!", rating: 5 },
+            { name: "Tasya I.", salon: "BeauSalon Jakarta Selatan", text: "Pelayanan premium, worth every penny.", rating: 5 },
+            // Kemang Beauty Home
+            { name: "Amanda P.", salon: "Kemang Beauty Home", text: "Creambath di rumah rasanya kayak di salon mahal Jaksel.", rating: 5 },
+            { name: "Clara W.", salon: "Kemang Beauty Home", text: "Recommended buat yang mager keluar macet-macetan.", rating: 5 },
+            { name: "Siscan J.", salon: "Kemang Beauty Home", text: "Pijatannya mantap, bikin rileks banget.", rating: 4 },
+            { name: "Fanny U.", salon: "Kemang Beauty Home", text: "Stylist datang tepat waktu dan sopan.", rating: 5 }
+        ],
+        'jakbar': [
+            // BeauSalon Jakarta Barat
+            { name: "Vivi L.", salon: "BeauSalon Jakarta Barat", text: "Smoothing rambut di rumah hasil tetep badai.", rating: 5 },
+            { name: "Grace O.", salon: "BeauSalon Jakarta Barat", text: "Praktis banget buat ibu rumah tangga kayak saya.", rating: 5 },
+            { name: "Heny K.", salon: "BeauSalon Jakarta Barat", text: "Rebonding hasilnya natural, gak kaku.", rating: 4 },
+            { name: "Lilis S.", salon: "BeauSalon Jakarta Barat", text: "Suka banget servisnya, pasti order lagi.", rating: 5 },
+            // Puri Indah Glamour
+            { name: "Lina T.", salon: "Puri Indah Glamour", text: "Puri Indah area tercover dengan baik. Stylist sopan.", rating: 4 },
+            { name: "Merry C.", salon: "Puri Indah Glamour", text: "Makeup party-nya bikin pangling.", rating: 5 },
+            { name: "Yola B.", salon: "Puri Indah Glamour", text: "Hair mask-nya wangi banget, tahan lama.", rating: 5 },
+            { name: "Desi N.", salon: "Puri Indah Glamour", text: "Cepet dan rapih kerjanya.", rating: 4 }
+        ],
+        'jaktim': [
+            { name: "Nadia H.", salon: "BeauSalon Jakarta Timur", text: "Seneng banget ada layanan ini di Rawamangun.", rating: 5 },
+            { name: "Dewi A.", salon: "BeauSalon Jakarta Timur", text: "Langganan potong rambut anak di rumah.", rating: 5 },
+            { name: "Rina M.", salon: "BeauSalon Jakarta Timur", text: "Makeup kondangan simpel tapi elegan.", rating: 4 },
+            { name: "Siti N.", salon: "Rawamangun Cuts", text: "Murah tapi gak murahan. Stylistnya pro.", rating: 4 },
+            { name: "Tari K.", salon: "Rawamangun Cuts", text: "Guntingannya pas sesuai request.", rating: 5 },
+            { name: "Yuni P.", salon: "Rawamangun Cuts", text: "Solusi pas lagi mager keluar rumah.", rating: 5 }
+        ],
+        'jakut': [
+            { name: "Tiffany.", salon: "BeauSalon Jakarta Utara", text: "MUA nya dateng tepat waktu ke PIK. Makeup tahan lama.", rating: 5 },
+            { name: "Angel.", salon: "BeauSalon Jakarta Utara", text: "Salon panggilan terbaik di Pluit sejauh ini.", rating: 4 },
+            { name: "Viona L.", salon: "BeauSalon Jakarta Utara", text: "Stylistnya bersih dan pake masker terus.", rating: 5 },
+            { name: "Sherly.", salon: "PIK Hair Studio", text: "Hair treatment sambil nungguin anak sekolah. Mantap.", rating: 5 },
+            { name: "Gaby R.", salon: "PIK Hair Studio", text: "Blow dry-nya awet 2 hari.", rating: 5 },
+            { name: "Cindy W.", salon: "PIK Hair Studio", text: "Pelayanan ramah banget.", rating: 4 }
+        ],
+        'bekasi': [
+            // BeauSalon Bekasi
+            { name: "Rani B.", salon: "BeauSalon Bekasi", text: "Akhirnya di Bekasi ada salon panggilan yang bagus!", rating: 5 },
+            { name: "Tya S.", salon: "BeauSalon Bekasi", text: "Stylist Bekasi ramah-ramah. Suka pijatannya pas creambath.", rating: 5 },
+            { name: "Ika P.", salon: "BeauSalon Bekasi", text: "Smoothing di rumah hasilnya lembut banget.", rating: 5 },
+            { name: "Maya D.", salon: "BeauSalon Bekasi", text: "Harga bersahabat untuk warga Bekasi.", rating: 4 },
+            // Galaxy Home Spa
+            { name: "Wulan D.", salon: "Galaxy Home Spa", text: "Hemat waktu banget gak perlu macet ke mall.", rating: 4 },
+            { name: "Fitri H.", salon: "Galaxy Home Spa", text: "Baru coba sekali langsung cocok.", rating: 5 },
+            { name: "Ninda K.", salon: "Galaxy Home Spa", text: "Galaxy area aman, stylist cepet sampe.", rating: 5 },
+            { name: "Oki L.", salon: "Galaxy Home Spa", text: "Creambath-nya juara!", rating: 5 }
+        ],
+        'depok': [
+            { name: "Ayu D.", salon: "BeauSalon Depok", text: "Anak UI wajib coba sih, praktis banget buat wisuda.", rating: 5 },
+            { name: "Indah K.", salon: "BeauSalon Depok", text: "Harga mahasiswa tapi kualitas oke.", rating: 4 },
+            { name: "Putri M.", salon: "BeauSalon Depok", text: "Stylist Margonda gercep banget.", rating: 5 },
+            { name: "Laras P.", salon: "Cinere Beauty", text: "Cinere area tercover. Stylistnya sabar banget.", rating: 5 },
+            { name: "Kiki J.", salon: "Cinere Beauty", text: "Makeup natural look-nya bagus.", rating: 4 },
+            { name: "Fira S.", salon: "Cinere Beauty", text: "Potong rambut poni rapih.", rating: 5 }
+        ],
+        'tangerang': [
+            { name: "Gisel.", salon: "BeauSalon Tangerang", text: "BSD Area stylistnya cepet sampainya. Alatnya bersih.", rating: 5 },
+            { name: "Vera.", salon: "BeauSalon Tangerang", text: "Layanan Gading Serpong top markotop.", rating: 5 },
+            { name: "Siska L.", salon: "BeauSalon Tangerang", text: "Smoothing rambut hasilnya berkilau.", rating: 5 },
+            { name: "Monika.", salon: "Gading Serpong MUA", text: "Makeup lamaran panggil ke rumah, puas banget!", rating: 5 },
+            { name: "Tania B.", salon: "Gading Serpong MUA", text: "Hairdo simple tapi elegan.", rating: 4 },
+            { name: "Rina W.", salon: "Gading Serpong MUA", text: "Recommended buat acara wisuda.", rating: 5 }
+        ],
+        'bogor': [
+            { name: "Nengsih.", salon: "BeauSalon Bogor", text: "Teh stylistna bageur pisan. Hasilna geulis.", rating: 5 },
+            { name: "Hana F.", salon: "BeauSalon Bogor", text: "Perawatan rambut di rumah adem banget udaranya.", rating: 4 },
+            { name: "Yanti S.", salon: "BeauSalon Bogor", text: "Potong rambut model layer bagus banget.", rating: 5 },
+            { name: "Sari M.", salon: "Sentul City Stylist", text: "Sentul City aman terjangkau. Makasih BeauCall.", rating: 5 },
+            { name: "Dewi R.", salon: "Sentul City Stylist", text: "Creambath buahnya wangi segar.", rating: 5 },
+            { name: "Lia K.", salon: "Sentul City Stylist", text: "Pelayanan cepat dan ramah.", rating: 4 }
+        ]
     };
 
     function openReviews() {
         const region = document.getElementById('region').value;
         const modal = document.getElementById('review-modal');
-        const container = document.getElementById('review-list-container');
         const title = document.getElementById('review-region-title');
+        const salonFilter = document.getElementById('review-salon-filter');
 
         toggleReviewMode('read');
 
+        // VALIDASI: User harus pilih daerah dulu
         if (!region) {
-            showCustomAlert("Silakan pilih 'Daerah Domisili' pada form Booking terlebih dahulu.", "Pilih Daerah");
+            showCustomAlert("Silakan pilih 'Daerah Domisili' pada form Booking terlebih dahulu untuk melihat ulasan.", "Pilih Daerah");
             document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
             return;
         }
 
-        const reviews = reviewDatabase[region] || [];
+        // Ambil Nama Daerah
         const regionName = document.getElementById('region').options[document.getElementById('region').selectedIndex].text;
         title.innerText = `Menampilkan Ulasan Area: ${regionName}`;
+
+        // 1. ISI DROPDOWN FILTER SALON
+        // Kosongkan dropdown dulu (kecuali opsi 'all')
+        salonFilter.innerHTML = '<option value="all">Tampilkan Semua Salon</option>';
+        
+        // Ambil daftar salon dari regionData (yang dipakai di booking)
+        const salonsInRegion = regionData[region].salons;
+        salonsInRegion.forEach(salon => {
+            const option = document.createElement('option');
+            option.value = salon.name;
+            option.text = salon.name;
+            salonFilter.appendChild(option);
+        });
+
+        // 2. TAMPILKAN REVIEW (Default: All)
+        renderFilteredReviews();
+
+        modal.style.display = "flex";
+    }
+
+    // FUNGSI BARU: Render Review berdasarkan Filter Dropdown
+    function renderFilteredReviews() {
+        const region = document.getElementById('region').value;
+        const selectedSalonName = document.getElementById('review-salon-filter').value;
+        const container = document.getElementById('review-list-container');
+        
+        // Ambil semua review dari daerah tersebut
+        let reviews = reviewDatabase[region] || [];
+
+        // FILTER: Jika user memilih salon spesifik (bukan 'all'), filter arraynya
+        if (selectedSalonName !== 'all') {
+            reviews = reviews.filter(r => r.salon === selectedSalonName);
+        }
+
         container.innerHTML = ""; 
 
         if (reviews.length > 0) {
+            // Pisahkan review baru dan lama
             const newReviews = reviews.filter(r => r.isNew === true);
             const oldReviews = reviews.filter(r => !r.isNew);
+            
+            // Acak review lama
             const shuffledOld = [...oldReviews].sort(() => 0.5 - Math.random());
-            const finalDisplay = [...newReviews, ...shuffledOld].slice(0, 10);
+            
+            // Gabungkan
+            const finalDisplay = [...newReviews, ...shuffledOld];
 
             finalDisplay.forEach(rev => {
                 let stars = "";
@@ -1817,7 +2015,10 @@ Terima Kasih! — ★`;
 
                 card.innerHTML = `
                     <div class="review-header">
-                        <div><span class="reviewer-name">${rev.name}</span> <span style="font-size:0.8rem; color:var(--secondary); margin-left:5px;">- ${rev.salon}</span></div>
+                        <div>
+                            <span class="reviewer-name">${rev.name}</span> 
+                            <span style="font-size:0.8rem; color:var(--secondary); margin-left:5px;">- ${rev.salon}</span>
+                        </div>
                         <span class="review-stars">${stars}</span>
                     </div>
                     <p class="review-text">"${rev.text}"</p>
@@ -1826,9 +2027,8 @@ Terima Kasih! — ★`;
                 container.appendChild(card);
             });
         } else {
-            container.innerHTML = "<p style='text-align:center; padding:20px;'>Belum ada ulasan untuk daerah ini.</p>";
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#777;'>Belum ada ulasan untuk salon ini.</p>";
         }
-        modal.style.display = "flex";
     }
 
     function closeReviewModal() { document.getElementById('review-modal').style.display = "none"; }
@@ -1857,7 +2057,12 @@ Terima Kasih! — ★`;
         }
 
         let assignedSalon = "BeauCall Service"; 
-        if (regionData[region] && regionData[region].salons.length > 0) {
+        // Jika user sedang memfilter salon tertentu, gunakan salon itu. Jika 'all', pilih random.
+        const currentFilter = document.getElementById('review-salon-filter').value;
+        
+        if (currentFilter !== 'all') {
+            assignedSalon = currentFilter;
+        } else if (regionData[region] && regionData[region].salons.length > 0) {
             const randomIdx = Math.floor(Math.random() * regionData[region].salons.length);
             assignedSalon = regionData[region].salons[randomIdx].name;
         }
@@ -1873,9 +2078,9 @@ Terima Kasih! — ★`;
         document.getElementById('new-review-text').value = "";
 
         toggleReviewMode('read');
-        openReviews(); 
+        // Refresh list dengan filter yang sedang aktif
+        renderFilteredReviews();
     }
-
     /* =========================================
        5. EVENT LISTENERS & INITIALIZATION
        ========================================= */

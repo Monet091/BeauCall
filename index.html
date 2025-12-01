@@ -315,6 +315,7 @@
             cursor: pointer;
             text-decoration: underline;
         }
+        
         /* Gaya untuk Teks Peringatan (Poin 7) */
         .disclaimer-text {
             font-size: 0.85rem;
@@ -347,7 +348,7 @@
             overflow: hidden;
             padding: 0;
         }
-        #home.fade-in, #about.fade-in, #menu.fade-in, #booking.fade-in {
+        #home.fade-in, #about.fade-in, #menu.fade-in, #booking.fade-in, #partner-dashboard.fade-in {
             max-height: none;
             padding-top: 4.5rem; 
             padding-bottom: 2rem;
@@ -558,7 +559,6 @@
             gap: 1.5rem;
             padding: 2rem;
             background-color: #fff;
-            border: 1px solid #eee;
         }
         input, select {
             padding: 1rem;
@@ -594,6 +594,7 @@
             color: var(--dark-brown);
             margin-bottom: 0.5rem;
         }
+
 
         /* Payment */
         /* --- STYLE PEMBAYARAN BARU --- */
@@ -767,6 +768,36 @@
             border-top: 5px solid var(--secondary); /* Garis emas di atas */
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--main-bg); /* Warna background sama dengan tema */
+            z-index: 9999; /* LEBIH TINGGI dari Login (5000) agar menutupi login */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-out; /* Efek memudar halus */
+        }
+
+        .splash-logo {
+            width: 150px; /* Ukuran logo awal */
+            animation: logoPulse 2s infinite ease-in-out;
+        }
+
+        /* Animasi Logo Berdenyut Halus */
+        @keyframes logoPulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* Class untuk menyembunyikan splash screen */
+        .splash-hidden {
+            opacity: 0;
+            pointer-events: none; /* Agar bisa klik elemen di bawahnya */
         }
 
         /* Review */
@@ -964,15 +995,95 @@
                 flex: none !important; 
             }
         }
+
+        /* --- PARTNER / MITRA STYLES --- */
+        #partner-dashboard {
+            padding-top: 2rem; /* Jarak dari atas */
+            min-height: 80vh; /* Agar footer tetap di bawah */
+        }
+
+        .dashboard-header {
+            background: var(--dark-brown);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .order-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-left: 5px solid var(--secondary);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .order-card h4 {
+            margin-bottom: 0.5rem;
+            color: var(--dark-brown);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border: 1px solid #2e7d32;
+            text-transform: uppercase;
+        }
+
+        .order-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+
+        /* Responsif Dashboard */
+        @media (max-width: 768px) {
+            .order-detail-grid { grid-template-columns: 1fr; }
+            .dashboard-header { flex-direction: column; gap: 1rem; text-align: center; }
+        }
+
+        /* --- FIX LAYAR PUTIH DASHBOARD MITRA --- */
+        /* Aturan ini LEBIH KUAT daripada aturan section umum */
+        section#partner-dashboard.fade-in {
+            display: block !important;     /* Paksa muncul */
+            opacity: 1 !important;         /* Paksa terlihat */
+            max-height: none !important;   /* Paksa tinggi tidak nol */
+            min-height: 80vh !important;   /* Paksa tinggi minimal */
+            padding-top: 6rem !important;  /* Paksa jarak atas */
+            transform: translateY(0) !important;
+            visibility: visible !important;
+        }
     </style>
 </head>
 <body>
+    <div id="splash-screen">
+        <img src="IMG_1919.PNG" alt="BeauCall Logo" class="splash-logo">
+    </div>
     <div id="login-overlay">
         <div class="login-box">
             <h2 id="auth-title">Welcome Back</h2>
             <p class="subtitle" id="auth-subtitle">Silakan login untuk melanjutkan booking.</p>
             
-            <form id="auth-form" onsubmit="handleAuth(event)">
+            <form id="auth-form">
                 <div class="input-group">
                     <label>Username</label>
                     <input type="text" id="auth-username" placeholder="Masukkan Username">
@@ -991,7 +1102,7 @@
 
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="auth-password" placeholder="••••••••">
+                    <input type="password" id="auth-password" placeholder="">
                 </div>
 
                 <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="auth-btn">Masuk (Login)</button>
@@ -1000,7 +1111,23 @@
             <div class="auth-toggle">
                 <span id="auth-toggle-text">Belum punya akun? </span>
                 <a onclick="toggleAuthMode()" id="auth-toggle-link">Daftar Sekarang</a>
+                
+                <div style="margin-top: 15px; font-size: 0.8rem; border-top: 1px solid #eee; padding-top: 10px;">
+                    <a onclick="openPartnerAuth()" style="color: #999; text-decoration: none; cursor: pointer;">Masuk sebagai Mitra / Salon Partner</a>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <div id="partner-login-overlay" class="modal-overlay">
+        <div class="login-box" style="border-color: var(--dark-brown);">
+            <h2 style="color: var(--dark-brown);">Partner Access</h2>
+            <p class="subtitle">Masukkan Kode Mitra untuk mengakses Dashboard.</p>
+            
+            <input type="password" id="mitra-code" placeholder="Kode Mitra" style="text-align: center; letter-spacing: 2px; font-weight: bold; width: 100%; padding: 12px; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 4px; outline: none;">
+            
+            <button class="btn" onclick="checkMitraCode()" style="width: 100%; background-color: var(--dark-brown);">Masuk Dashboard</button>
+            <button class="btn" onclick="closePartnerAuth()" style="width: 100%; margin-top: 10px; background: #ccc; color: #333;">Batal</button>
         </div>
     </div>
     <header>
@@ -1169,16 +1296,30 @@
             <button id="confirm-booking-btn" class="btn" style="width: 100%;" disabled>Lanjutkan ke Pembayaran & WhatsApp</button>
         </div>
     </section>
+    <section id="partner-dashboard" class="fade-out" style="display: none; padding-top: 2rem; min-height: 80vh;">
+        <div class="dashboard-header">
+            <div>
+                <h2 style="color: white; margin-bottom: 5px;">BeauCall Partner Portal</h2>
+                <p style="color: #ddd;">Halo, <span id="partner-salon-name">Mitra Terverifikasi</span></p>
+            </div>
+            <button class="logout-btn" onclick="logout()" style="width: auto; padding: 0.5rem 1.5rem; background: white; color: var(--dark-brown);">Keluar</button>
+        </div>
 
+        <h3 style="margin-bottom: 1rem; border-bottom: 2px solid var(--secondary); display: inline-block; color: var(--dark-brown);">Riwayat Pesanan Masuk (Real-time)</h3>
+        <p style="font-size: 0.9rem; color: #666; margin-bottom: 2rem;">Data ini sinkron dengan pembayaran sukses di website.</p>
+
+        <div id="partner-orders-container">
+            </div>
+    </section>
     <footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h4>Contact Us</h4>
-                <p>WhatsApp: 0856-9487-0477</p>
+                <p>WhatsApp: 0858-1951-3747</p>
                 <p>Email: beaucallofficial@gmail.com</p>
             </div>
             <div class="footer-section social-icons">
-                <a href="https://wa.me/6285694870477" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/6285819513747" target="_blank"><i class="fab fa-whatsapp"></i></a>
                 <a href="https://instagram.com/beaucall.official" target="_blank"><i class="fab fa-instagram"></i></a>
                 <a href="https://www.tiktok.com/@beaucallofficial?_r=1&_t=ZS-91fjHY7sCRR" target="_blank"><i class="fab fa-tiktok"></i></a>    
             </div>
@@ -1254,6 +1395,11 @@
             <div id="review-write-view" style="display: none; text-align: left;">
                 <input type="text" id="new-review-name" placeholder="Nama Anda" style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd;">
                 
+                <p style="margin-bottom: 5px; font-size: 0.9rem;">Pilih Salon:</p>
+                <select id="new-review-salon" style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd;">
+                    <option value="">-- Pilih Salon yang Anda Kunjungi --</option>
+                    </select>
+
                 <p style="margin-bottom: 5px; font-size: 0.9rem;">Rating:</p>
                 <select id="new-review-rating" style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd;">
                     <option value="5">⭐⭐⭐⭐⭐ (Sangat Puas)</option>
@@ -1753,6 +1899,7 @@
         modal.style.display = "flex";
     }
 
+    // MODIFIKASI FUNGSI INI
     function fakePaymentProcess() {
         document.getElementById('payment-instruction').style.display = 'none';
         document.getElementById('payment-loading').style.display = 'block';
@@ -1764,11 +1911,36 @@
             const audio = document.getElementById('success-sound');
             if(audio) audio.play().catch(e => console.log("Audio block"));
 
+            // --- FITUR BARU: SIMPAN DATA ORDER KE SISTEM DUMMY ---
+            saveOrderToSystem(); 
+            // -----------------------------------------------------
+
             setTimeout(() => {
                 sendToWhatsApp();
                 closePaymentModal();
             }, 2000);
         }, 2000);
+    }
+
+    // FUNGSI BARU: Simpan Data ke LocalStorage
+    function saveOrderToSystem() {
+        const orderData = {
+            id: "ORD-" + Math.floor(Math.random() * 100000),
+            customer: document.getElementById('name').value,
+            whatsapp: document.getElementById('whatsapp').value,
+            service: document.getElementById('service').value,
+            salon: selectedSalon.name,
+            price: finalPaymentData.priceFormatted,
+            date: document.getElementById('date').value,
+            time: document.getElementById('time').value,
+            payment: finalPaymentData.method,
+            timestamp: new Date().toLocaleString()
+        };
+
+        // Ambil data lama, tambah data baru, simpan lagi
+        let allOrders = JSON.parse(localStorage.getItem('beaucall_orders')) || [];
+        allOrders.unshift(orderData); // Taruh paling atas
+        localStorage.setItem('beaucall_orders', JSON.stringify(allOrders));
     }
 
     function closePaymentModal() {
@@ -1932,6 +2104,42 @@ Terima Kasih! — ★`;
         ]
     };
 
+    // --- FUNGSI PENTING YANG HILANG ---
+    function renderFilteredReviews() {
+        const region = document.getElementById('region').value;
+        const selectedSalonName = document.getElementById('review-salon-filter').value;
+        const container = document.getElementById('review-list-container');
+        
+        let reviews = reviewDatabase[region] || [];
+
+        if (selectedSalonName !== 'all') {
+            reviews = reviews.filter(r => r.salon === selectedSalonName);
+        }
+
+        container.innerHTML = ""; 
+
+        if (reviews.length > 0) {
+            // Acak & Tampilkan
+            const shuffled = [...reviews].sort(() => 0.5 - Math.random());
+            shuffled.forEach(rev => {
+                let stars = "";
+                for(let i=0; i<rev.rating; i++) stars += '<i class="fas fa-star"></i> ';
+                const card = document.createElement('div');
+                card.className = "review-card";
+                card.innerHTML = `
+                    <div class="review-header">
+                        <div><span class="reviewer-name">${rev.name}</span> <span style="font-size:0.8rem; color:var(--secondary); margin-left:5px;">- ${rev.salon}</span></div>
+                        <span class="review-stars">${stars}</span>
+                    </div>
+                    <p class="review-text">"${rev.text}"</p>
+                `;
+                container.appendChild(card);
+            });
+        } else {
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#777;'>Belum ada ulasan.</p>";
+        }
+    }
+
     function openReviews() {
         const region = document.getElementById('region').value;
         const modal = document.getElementById('review-modal');
@@ -1976,10 +2184,8 @@ Terima Kasih! — ★`;
         const selectedSalonName = document.getElementById('review-salon-filter').value;
         const container = document.getElementById('review-list-container');
         
-        // Ambil semua review dari daerah tersebut
         let reviews = reviewDatabase[region] || [];
 
-        // FILTER: Jika user memilih salon spesifik (bukan 'all'), filter arraynya
         if (selectedSalonName !== 'all') {
             reviews = reviews.filter(r => r.salon === selectedSalonName);
         }
@@ -1987,14 +2193,9 @@ Terima Kasih! — ★`;
         container.innerHTML = ""; 
 
         if (reviews.length > 0) {
-            // Pisahkan review baru dan lama
             const newReviews = reviews.filter(r => r.isNew === true);
             const oldReviews = reviews.filter(r => !r.isNew);
-            
-            // Acak review lama
             const shuffledOld = [...oldReviews].sort(() => 0.5 - Math.random());
-            
-            // Gabungkan
             const finalDisplay = [...newReviews, ...shuffledOld];
 
             finalDisplay.forEach(rev => {
@@ -2015,10 +2216,7 @@ Terima Kasih! — ★`;
 
                 card.innerHTML = `
                     <div class="review-header">
-                        <div>
-                            <span class="reviewer-name">${rev.name}</span> 
-                            <span style="font-size:0.8rem; color:var(--secondary); margin-left:5px;">- ${rev.salon}</span>
-                        </div>
+                        <div><span class="reviewer-name">${rev.name}</span> <span style="font-size:0.8rem; color:var(--secondary); margin-left:5px;">- ${rev.salon}</span></div>
                         <span class="review-stars">${stars}</span>
                     </div>
                     <p class="review-text">"${rev.text}"</p>
@@ -2033,54 +2231,81 @@ Terima Kasih! — ★`;
 
     function closeReviewModal() { document.getElementById('review-modal').style.display = "none"; }
 
+    // 1. Update Fungsi Toggle (Untuk Mengisi Dropdown Salon)
     function toggleReviewMode(mode) {
         const readView = document.getElementById('review-read-view');
         const writeView = document.getElementById('review-write-view');
+        
         if (mode === 'write') {
             readView.style.display = 'none';
             writeView.style.display = 'block';
+
+            // --- LOGIKA BARU: ISI DROPDOWN SALON ---
+            const region = document.getElementById('region').value;
+            const salonSelect = document.getElementById('new-review-salon');
+            
+            // Kosongkan dulu
+            salonSelect.innerHTML = '<option value="">-- Pilih Salon yang Anda Kunjungi --</option>';
+
+            // Ambil data salon dari regionData (database booking)
+            if (region && regionData[region]) {
+                const salonsInRegion = regionData[region].salons;
+                salonsInRegion.forEach(salon => {
+                    const option = document.createElement('option');
+                    option.value = salon.name; // Nilai yang akan disimpan
+                    option.text = salon.name;  // Teks yang muncul
+                    salonSelect.appendChild(option);
+                });
+            }
+            // ---------------------------------------
+
         } else {
             readView.style.display = 'block';
             writeView.style.display = 'none';
         }
     }
 
+    // 2. Update Fungsi Submit (Untuk Mengambil Nilai Salon)
     function submitFakeReview() {
         const name = document.getElementById('new-review-name').value;
         const text = document.getElementById('new-review-text').value;
         const rating = document.getElementById('new-review-rating').value;
         const region = document.getElementById('region').value;
+        
+        // Ambil nilai salon yang dipilih user
+        const selectedSalon = document.getElementById('new-review-salon').value;
 
-        if (!name || !text) {
-            showCustomAlert("Mohon isi nama dan komentar Anda.", "Data Belum Lengkap");
+        // Validasi Tambahan (Cek Salon)
+        if (!name || !text || !selectedSalon) {
+            showCustomAlert("Mohon lengkapi data (Nama, Pilihan Salon, dan Komentar).", "Data Belum Lengkap");
             return;
         }
 
-        let assignedSalon = "BeauCall Service"; 
-        // Jika user sedang memfilter salon tertentu, gunakan salon itu. Jika 'all', pilih random.
-        const currentFilter = document.getElementById('review-salon-filter').value;
-        
-        if (currentFilter !== 'all') {
-            assignedSalon = currentFilter;
-        } else if (regionData[region] && regionData[region].salons.length > 0) {
-            const randomIdx = Math.floor(Math.random() * regionData[region].salons.length);
-            assignedSalon = regionData[region].salons[randomIdx].name;
-        }
-
-        const newReview = { name: name, salon: assignedSalon, text: text, rating: parseInt(rating), isNew: true };
+        // Buat Data Review Baru (Pakai selectedSalon, bukan random lagi)
+        const newReview = {
+            name: name,
+            salon: selectedSalon, // <-- Menggunakan input user
+            text: text,
+            rating: parseInt(rating),
+            isNew: true 
+        };
 
         if (!reviewDatabase[region]) { reviewDatabase[region] = []; }
         reviewDatabase[region].unshift(newReview); 
 
         showCustomAlert("Ulasan Anda berhasil ditambahkan!", "Terima Kasih");
         
+        // Reset Form
         document.getElementById('new-review-name').value = "";
         document.getElementById('new-review-text').value = "";
+        document.getElementById('new-review-salon').value = ""; // Reset dropdown
 
         toggleReviewMode('read');
-        // Refresh list dengan filter yang sedang aktif
+        // Refresh list (tetap menghormati filter yang sedang aktif)
         renderFilteredReviews();
     }
+
+
     /* =========================================
        5. EVENT LISTENERS & INITIALIZATION
        ========================================= */
@@ -2094,15 +2319,107 @@ Terima Kasih! — ★`;
     if(authForm) authForm.addEventListener('submit', handleAuth);
 
     // Initialize Home Page
+    // Initialize Home Page & Splash Screen
     window.addEventListener('load', () => {
+        // 1. Setup Awal Halaman
         document.querySelectorAll('section').forEach(sec => { sec.style.display = 'none'; });
         const homeSection = document.querySelector('#home');
         if(homeSection) {
             homeSection.style.display = 'flex'; 
             homeSection.classList.add('fade-in');
         }
+
+        // 2. LOGIKA SPLASH SCREEN (BARU)
+        const splash = document.getElementById('splash-screen');
+        
+        // Tahan Splash Screen selama 2.5 detik
+        setTimeout(() => {
+            // Mulai efek memudar (Fade Out)
+            splash.classList.add('splash-hidden');
+            
+            // Tunggu 1 detik lagi (sesuai durasi transisi CSS) baru hapus dari layar
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 1000); 
+
+        }, 2500); // Durasi logo tampil (2500ms = 2.5 detik)
     });
 
+
+    /* =========================================
+       6. PARTNER / MITRA SYSTEM LOGIC
+       ========================================= */
+    
+    function openPartnerAuth() {
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('partner-login-overlay').style.display = 'flex';
+    }
+
+    function closePartnerAuth() {
+        document.getElementById('partner-login-overlay').style.display = 'none';
+        document.getElementById('login-overlay').style.display = 'flex';
+    }
+
+    function checkMitraCode() {
+        const code = document.getElementById('mitra-code').value;
+        
+        // KODE RAHASIA: 350827
+        if (code === "350827") {
+            // Login Sukses
+            document.getElementById('partner-login-overlay').style.display = 'none';
+            
+            // Sembunyikan semua section customer
+            document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
+            document.querySelector('header').style.display = 'none'; // Sembunyikan navbar customer
+            
+            // Tampilkan Dashboard
+            const dashboard = document.getElementById('partner-dashboard');
+            dashboard.style.display = 'block';
+            dashboard.classList.add('fade-in');
+            
+            // Render Data
+            renderPartnerOrders();
+            
+            showCustomAlert("Selamat datang di Portal Mitra BeauCall.", "Akses Diterima");
+        } else {
+            showCustomAlert("Kode Mitra tidak valid. Silakan hubungi admin BeauCall.", "Akses Ditolak");
+        }
+    }
+
+    function renderPartnerOrders() {
+        const container = document.getElementById('partner-orders-container');
+        const orders = JSON.parse(localStorage.getItem('beaucall_orders')) || [];
+        
+        container.innerHTML = "";
+
+        if (orders.length === 0) {
+            container.innerHTML = "<div style='text-align:center; padding:3rem; background:#fff; border:1px dashed #ccc; border-radius:8px; color:#999;'>Belum ada pesanan masuk hari ini.</div>";
+            return;
+        }
+
+        orders.forEach(order => {
+            const card = document.createElement('div');
+            card.className = 'order-card';
+            card.innerHTML = `
+                <h4>
+                    <span>${order.id} <small style="color:#999; font-weight:normal; font-size:0.8rem;">(${order.timestamp})</small></span>
+                    <span class="status-badge">✅ PAID / LUNAS</span>
+                </h4>
+                <div class="order-detail-grid">
+                    <div><strong style="color:var(--dark-brown);">Customer:</strong><br>${order.customer}<br><small>${order.whatsapp}</small></div>
+                    <div><strong style="color:var(--dark-brown);">Layanan:</strong><br>${order.service}<br><small>Jadwal: ${order.date} @ ${order.time}</small></div>
+                    <div><strong style="color:var(--dark-brown);">Total:</strong><br>${order.price}</div>
+                    <div><strong style="color:var(--dark-brown);">Via:</strong><br>${order.payment}</div>
+                </div>
+                <div style="margin-top:1rem; text-align:right;">
+                    <a href="https://wa.me/${order.whatsapp}" target="_blank" style="display:inline-block; padding:8px 15px; background:var(--secondary); color:white; border-radius:4px; font-size:0.9rem; text-decoration:none;">
+                        <i class="fab fa-whatsapp"></i> Hubungi Customer
+                    </a>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
 </script>
 </body>
 </html>

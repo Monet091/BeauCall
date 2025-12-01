@@ -1555,11 +1555,22 @@
             btn.innerText = originalText;
             btn.disabled = false;
             
-            // Start default service view
+            // --- PERBAIKAN PENTING: PASTIKAN TAMPILAN USER ---
+            
+            // A. Pastikan Dashboard Mitra Hilang
+            document.getElementById('partner-dashboard').style.display = 'none';
+            document.getElementById('partner-dashboard').classList.remove('fade-in');
+            
+            // B. Pastikan Header Muncul
+            document.querySelector('header').style.display = 'block';
+
+            // C. Arahkan ke Home dan Reset Service View
+            navigateTo('#home');
             switchServiceCategory('hair');
 
         }, 1000);
     }
+
 
     function toggleProfileMenu() {
         document.getElementById('profile-menu').classList.toggle('active');
@@ -1567,14 +1578,25 @@
 
     function logout() {
         currentUser = null;
+        
         document.querySelector('.user-profile').style.display = 'none';
         document.getElementById('profile-menu').classList.remove('active');
+        
         document.getElementById('login-overlay').style.display = 'flex'; 
         document.getElementById('auth-username').value = '';
         document.getElementById('auth-password').value = '';
         
-        // Reset ke mode login awal
         if (!isLoginMode) toggleAuthMode();
+        
+        
+        const dashboard = document.getElementById('partner-dashboard');
+        dashboard.style.display = 'none';
+        dashboard.classList.remove('fade-in'); 
+        dashboard.classList.add('fade-out');
+
+        document.querySelector('header').style.display = 'block'; 
+
+        navigateTo('#home');
     }
 
     /* =========================================
